@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">original-music</string>
+    <string name="title_dj">DJ</string>
+    <string name="title_songs">Songs</string>
+    <string name="title_youtube">Youtube</string>
+    <string name="loader_text">Original Music</string>
+</resources>
