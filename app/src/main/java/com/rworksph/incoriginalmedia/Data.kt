@@ -11,9 +11,14 @@ class Data {
         editor.commit()
     }
 
-    fun getStoreData(context: Context, data: String){
+    fun getStoredJsonData(context: Context): String? {
         val sharedPreference =  context.getSharedPreferences("Data",Context.MODE_PRIVATE)
-        val data = sharedPreference.getString("jsonData",data)
+        val data = sharedPreference.getString("jsonData","")
+        return data
+    }
+
+    fun getSetTracks(){
+
     }
 
 

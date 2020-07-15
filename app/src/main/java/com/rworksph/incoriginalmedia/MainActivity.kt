@@ -12,16 +12,14 @@ import android.util.Log
 class MainActivity : AppCompatActivity() {
     private var mDelayHandler: Handler? = null
     private val SPLASH_DELAY: Long = 3000 //3 seconds
-    var task = FetchData()
+    var data = Data()
+    var task = FetchData("https://api-v2.hearthis.at/mikeds/?type=playlists")
     internal val mRunnable: Runnable = Runnable {
         if (!isFinishing) {
 
             task.execute()
+            data.storeJsonData(this, task.get())
 
-            val sharedPreference =  getSharedPreferences("Data",Context.MODE_PRIVATE)
-            var editor = sharedPreference.edit()
-            editor.putString("jsonData",task.get())
-            editor.commit()
 
             Log.e("papasok na data sa app", task.get())
             val intent = Intent(applicationContext, Home::class.java)

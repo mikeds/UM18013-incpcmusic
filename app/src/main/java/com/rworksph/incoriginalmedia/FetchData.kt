@@ -1,12 +1,11 @@
 package com.rworksph.incoriginalmedia
 
 import android.os.AsyncTask
-import android.util.Log
-import org.json.JSONArray
 import java.net.URL
 
-class FetchData() : AsyncTask<String, Void, String>(){
+class FetchData(url0: String) : AsyncTask<String, Void, String>(){
 
+    val url1 = url0
     var dataList = ArrayList<HashMap<String, String>>()
     override fun onPreExecute() {
         super.onPreExecute()
@@ -14,7 +13,7 @@ class FetchData() : AsyncTask<String, Void, String>(){
     }
 
     override fun doInBackground(vararg params: String?): String? {
-        return URL("https://api-v2.hearthis.at/mikeds/?type=playlists").readText(
+        return URL(url1).readText(
             Charsets.UTF_8
         )
     }
