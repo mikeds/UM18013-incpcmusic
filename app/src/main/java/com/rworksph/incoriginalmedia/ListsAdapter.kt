@@ -39,7 +39,7 @@ class ListsAdapter(internal var context: Context, internal var list: List<Sets>)
             .into(view.findViewById<ImageView>(R.id.ivSetCard))
 
         view.setOnClickListener{
-            Toast.makeText(context,"krungkrunginamerz", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context,"clicked", Toast.LENGTH_SHORT).show()
         }
         container.addView(view)
         return view
