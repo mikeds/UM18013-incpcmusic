@@ -2,7 +2,7 @@ package com.rworksph.incoriginalmedia
 
 import android.content.Context
 
-class Datas {
+class Data {
 
     fun storeJsonData(context: Context, data: String) {
         val sharedPreference =  context.getSharedPreferences("Data",Context.MODE_PRIVATE)
