@@ -16,20 +16,20 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <com.gigamole.infinitecycleviewpager.HorizontalInfiniteCycleViewPager
                 android:id="@+id/view_pager"
                 android:layout_width="match_parent"
                 android:layout_height="400dp"
                 android:background="@drawable/thumbmark"
-                app:icvp_center_page_scale_offset="30dp"
+                app:icvp_center_page_scale_offset="10dp"
                 app:icvp_interpolator="@android:anim/accelerate_decelerate_interpolator"
-                app:icvp_max_page_scale="0.8"
+                app:icvp_max_page_scale="0.7"
                 app:icvp_medium_scaled="false"
-                app:icvp_min_page_scale="0.55"
+                app:icvp_min_page_scale="0.35"
                 app:icvp_min_page_scale_offset="5dp"
-                app:icvp_scroll_duration="250" />
+                app:icvp_scroll_duration="400" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -51,7 +51,7 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="200dp" />
 
         </LinearLayout>
     </ScrollView>
