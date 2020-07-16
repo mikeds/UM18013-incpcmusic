@@ -21,19 +21,24 @@
 
         <TextView
             android:id="@+id/tvSetTitle"
-            android:layout_width="wrap_content"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="0dp"
+            android:gravity="center_horizontal"
             android:text="Miss ko na si Kuya"
-            android:textColor="#ededed"
-            android:textSize="18sp"
+            android:textColor="#fff"
+            android:textSize="20sp"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tvSetSongCount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="(11 songs)" />
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:text="(11 songs)"
+            android:textColor="#fff"
+            android:textSize="15sp" />
     </LinearLayout>
 
 </RelativeLayout>

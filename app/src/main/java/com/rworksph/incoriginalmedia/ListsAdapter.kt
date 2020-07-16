@@ -11,6 +11,7 @@ import androidx.viewpager.widget.PagerAdapter
 import com.squareup.picasso.Picasso
 
 class ListsAdapter(internal var context: Context, internal var list: List<Sets>):PagerAdapter() {
+
     override fun isViewFromObject(p0: View, p1: Any): Boolean {
         return p0 == p1
     }
@@ -39,7 +40,7 @@ class ListsAdapter(internal var context: Context, internal var list: List<Sets>)
             .into(view.findViewById<ImageView>(R.id.ivSetCard))
 
         view.setOnClickListener{
-            Toast.makeText(context,"krungkrunginamerz", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context,dataitem.songSetUrl, Toast.LENGTH_SHORT).show()
         }
         container.addView(view)
         return view

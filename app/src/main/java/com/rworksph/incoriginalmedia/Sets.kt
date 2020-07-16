@@ -9,7 +9,7 @@ class Sets {
     constructor(songSetTitle:String, songSetImage:String, songSetSongCount:String, songSetUrl:String){
         this.songSetTitle =  songSetTitle
         this.songSetImage =  songSetImage
-        this.songSetSongCount =  songSetSongCount
+        this.songSetSongCount =  "($songSetSongCount songs)"
         this.songSetUrl =  songSetUrl
     }
 }
