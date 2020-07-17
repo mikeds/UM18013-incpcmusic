@@ -1,24 +1,39 @@
 package com.rworksph.incoriginalmedia
 
 import android.content.Context
+import android.util.Log
+import org.json.JSONArray
 
 class Data {
 
-    fun storeJsonData(context: Context, data: String) {
+    val songList = ArrayList<HashMap<String, String>>()
+
+    fun storeSetData(context: Context, data: String) {
         val sharedPreference =  context.getSharedPreferences("Data",Context.MODE_PRIVATE)
         var editor = sharedPreference.edit()
-        editor.putString("jsonData",data)
+        editor.putString("SetData",data)
         editor.commit()
+
     }
 
-    fun getStoredJsonData(context: Context): String? {
+    fun getStoredSetData(context: Context): String? {
         val sharedPreference =  context.getSharedPreferences("Data",Context.MODE_PRIVATE)
-        val data = sharedPreference.getString("jsonData","")
+        val data = sharedPreference.getString("SetData","")
         return data
     }
 
-    fun getSetTracks(){
+    fun storeTracksData(context: Context, data: String) {
 
+        val sharedPreference =  context.getSharedPreferences("Data",Context.MODE_PRIVATE)
+        var editor = sharedPreference.edit()
+        editor.putString("TracksData",data)
+        editor.commit()
+    }
+
+    fun getTracksData(context: Context): String? {
+        val sharedPreference =  context.getSharedPreferences("Data",Context.MODE_PRIVATE)
+        val data = sharedPreference.getString("TracksData","")
+        return data
     }
 
 

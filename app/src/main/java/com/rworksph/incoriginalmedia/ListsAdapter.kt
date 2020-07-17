@@ -1,12 +1,14 @@
 package com.rworksph.incoriginalmedia
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat.startActivity
 import androidx.viewpager.widget.PagerAdapter
 import com.squareup.picasso.Picasso
 
@@ -40,11 +42,16 @@ class ListsAdapter(internal var context: Context, internal var list: List<Sets>)
             .into(view.findViewById<ImageView>(R.id.ivSetCard))
 
         view.setOnClickListener{
-            Toast.makeText(context,dataitem.songSetUrl, Toast.LENGTH_SHORT).show()
+            val intent = Intent(context, SetTracks::class.java)
+            intent.putExtra("albumThumb", dataitem.songSetImage)
+            intent.putExtra("albumTitle", dataitem.songSetTitle)
+            context.startActivity(intent)
         }
         container.addView(view)
         return view
 
 
     }
+
+
 }

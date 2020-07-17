@@ -7,21 +7,27 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
+import java.net.URL
 
 
 class MainActivity : AppCompatActivity() {
     private var mDelayHandler: Handler? = null
     private val SPLASH_DELAY: Long = 3000 //3 seconds
     var data = Data()
-    var task = FetchData("https://api-v2.hearthis.at/mikeds/?type=playlists")
+    var SetsData = FetchData("https://api-v2.hearthis.at/mikeds/?type=playlists&page=1&count=20")
+    var TracksData = FetchData("https://api-v2.hearthis.at/mikeds/?type=tracks&page=1&count=20")
+
     internal val mRunnable: Runnable = Runnable {
         if (!isFinishing) {
 
-            task.execute()
-            data.storeJsonData(this, task.get())
+            SetsData.execute()
+            data.storeSetData(this, SetsData.get())
+            TracksData.execute()
+            data.storeTracksData(this,TracksData.get())
 
 
-            Log.e("papasok na data sa app", task.get())
+            Log.e("papasok na data sa app", SetsData.get())
+
             val intent = Intent(applicationContext, Home::class.java)
             startActivity(intent)
             finish()

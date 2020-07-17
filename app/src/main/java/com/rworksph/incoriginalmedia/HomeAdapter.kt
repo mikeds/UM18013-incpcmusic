@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.view.menu.ActionMenuItemView
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
@@ -21,6 +22,10 @@ class HomeAdapter(private val context: Context,
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view:View = LayoutInflater.from(parent.context).inflate(R.layout.home_all_songs_item, parent, false)
+
+        view.setOnClickListener{
+            Toast.makeText(context,"songs to", Toast.LENGTH_SHORT).show()
+        }
         return ViewHolder(view)
     }
 
@@ -30,7 +35,7 @@ class HomeAdapter(private val context: Context,
         rowView.title.text = dataitem.get("title")
         Picasso.get()
             .load(dataitem.get("image"))
-            .resize(50, 50)
+            .resize(150, 150)
             .centerCrop()
             .into(rowView.image)
 
@@ -42,7 +47,7 @@ class HomeAdapter(private val context: Context,
        val image = itemView.findViewById<ImageView>(R.id.ivHomeSongAlbum)
     }
 
-    ///////////////////////////
+
 
 
 
