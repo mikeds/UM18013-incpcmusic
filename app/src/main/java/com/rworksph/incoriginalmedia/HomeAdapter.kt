@@ -39,6 +39,9 @@ class HomeAdapter(private val context: Context,
             .centerCrop()
             .into(rowView.image)
 
+        rowView.itemView.setOnClickListener{
+            Toast.makeText(context,dataitem.get("streamUrl"), Toast.LENGTH_SHORT).show()
+        }
 
     }
 

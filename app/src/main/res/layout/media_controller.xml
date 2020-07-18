@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.qhutch.bottomsheetlayout.BottomSheetLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/bottomSheetLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_alignParentBottom="true"
+    android:background="#ee2a2a2a"
+    app:collapsedHeight="80dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:id="@+id/imageViewArrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="24dp"
+                android:src="@drawable/ic_arrow_upward_white_24dp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="24dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Media Controller "
+                android:textColor="@android:color/white"
+                android:textSize="40sp" />
+
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="Yep Yep"
+            android:textColor="@android:color/white"
+            android:textSize="20sp" />
+    </LinearLayout>
+
+
+</com.qhutch.bottomsheetlayout.BottomSheetLayout>

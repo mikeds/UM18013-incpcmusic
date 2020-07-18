@@ -26,6 +26,7 @@ class MainActivity : AppCompatActivity() {
             data.storeTracksData(this,TracksData.get())
 
 
+
             Log.e("papasok na data sa app", SetsData.get())
 
             val intent = Intent(applicationContext, Home::class.java)

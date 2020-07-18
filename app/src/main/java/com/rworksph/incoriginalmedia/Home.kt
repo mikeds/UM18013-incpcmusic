@@ -3,9 +3,11 @@ package com.rworksph.incoriginalmedia
 import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.OrientationHelper
 import kotlinx.android.synthetic.main.activity_home.*
+import kotlinx.android.synthetic.main.media_controller.*
 import org.json.JSONArray
 
 class Home : AppCompatActivity() {
@@ -30,7 +32,11 @@ class Home : AppCompatActivity() {
         rvHome.layoutManager = LinearLayoutManager(this, OrientationHelper.HORIZONTAL, false)
         rvHome.adapter = HomeAdapter(this, songList)
 
+        bottomSheetLayout.visibility = View.GONE
 
+        bHome.setOnClickListener{
+            bottomSheetLayout.visibility = View.VISIBLE
+        }
         //Log.e("petsdata", FetchData().execute().status.toString())
         /*val sharedPreference =  getSharedPreferences("Data",Context.MODE_PRIVATE)
         val data = sharedPreference.getString("jsonData","")*/
