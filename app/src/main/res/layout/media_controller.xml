@@ -16,26 +16,42 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="80dp"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:id="@+id/MediaControllerLayout">
+
 
             <ImageView
-                android:id="@+id/imageViewArrow"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="24dp"
-                android:src="@drawable/ic_arrow_upward_white_24dp" />
+                android:id="@+id/ivMediaAlbum"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="0"
+                app:srcCompat="@drawable/thumbmark" />
 
             <TextView
-                android:layout_width="0dp"
+                android:id="@+id/tvMediaTitle"
+                android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="24dp"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="Media Controller "
-                android:textColor="@android:color/white"
-                android:textSize="40sp" />
+                android:layout_marginLeft="20dp"
+                android:layout_weight="0"
+                android:text="Kelan kaya pwede lumabas sila kuya? :'("
+                android:textColor="#fff"
+                android:textSize="16dp" />
 
+            <ImageView
+                android:id="@+id/ivPlayPauseBurron"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_weight="0"
+                app:srcCompat="@drawable/ic_baseline_play_arrow_24_d1a538" />
 
+            <ImageView
+                android:id="@+id/ivSkipBurron"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_weight="0"
+                app:srcCompat="@drawable/ic_baseline_skip_next_24_d1a538" />
         </LinearLayout>
 
         <TextView
