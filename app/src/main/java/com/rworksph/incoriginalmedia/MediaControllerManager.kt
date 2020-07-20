@@ -1,17 +1,52 @@
 package com.rworksph.incoriginalmedia
 
 import android.content.Context
+import android.media.AudioAttributes
 import android.media.MediaPlayer
-import android.opengl.Visibility
 import android.os.Build
-import android.text.Layout
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.TextView
+import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.annotation.RequiresApi
-import com.qhutch.bottomsheetlayout.BottomSheetLayout
+import java.util.zip.Inflater
 
-class MediaControllerManager  {
+class MediaControllerManager() : MediaPlayer() {
+    var Sig = sig.getInstance()
+    var mediaPlayer : MediaPlayer = Sig
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+    fun mediaControllerManager(steamUrl:String){
+        if (mediaPlayer != null){
+            if (mediaPlayer.isPlaying){
+                mediaPlayer.stop()
+                mediaPlayer.reset()
+                play(steamUrl)
+            }else{
+                play(steamUrl)
+            }
 
-   // val url = "http://........" // your URL here
+        }
+
+    }
+
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+    fun play(url:String){
+        mediaPlayer.apply{
+            setAudioAttributes(
+                AudioAttributes.Builder()
+                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                    .setUsage(AudioAttributes.USAGE_MEDIA)
+                    .build()
+            )
+            setDataSource(url)
+            prepareAsync()
+        }
+        mediaPlayer.setOnPreparedListener{
+            mediaPlayer.start()
+        }
+    }
+
+
+
 
 }

@@ -1,24 +1,29 @@
 package com.rworksph.incoriginalmedia
 
-import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatActivity
+import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
+import android.view.View
+import android.widget.ProgressBar
+import androidx.appcompat.app.AppCompatActivity
 import java.net.URL
 
 
 class MainActivity : AppCompatActivity() {
-    private var mDelayHandler: Handler? = null
-    private val SPLASH_DELAY: Long = 3000 //3 seconds
+    //private val SPLASH_DELAY: Long = 3000 //3 seconds
     var data = Data()
     var SetsData = FetchData("https://api-v2.hearthis.at/mikeds/?type=playlists&page=1&count=20")
     var TracksData = FetchData("https://api-v2.hearthis.at/mikeds/?type=tracks&page=1&count=20")
 
-    internal val mRunnable: Runnable = Runnable {
-        if (!isFinishing) {
+    private val SPLASH_TIME_OUT:Long = 3000 // 1 sec
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+
+        Handler().postDelayed({
 
             SetsData.execute()
             data.storeSetData(this, SetsData.get())
@@ -32,27 +37,15 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(applicationContext, Home::class.java)
             startActivity(intent)
             finish()
-        }
+
+
+            // close this activity
+            finish()
+        }, SPLASH_TIME_OUT)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
 
-        //Initialize the Handler
-        mDelayHandler = Handler()
 
-        //Navigate with delay
-        mDelayHandler!!.postDelayed(mRunnable, SPLASH_DELAY)
 
-    }
 
-    public override fun onDestroy() {
-
-        if (mDelayHandler != null) {
-            mDelayHandler!!.removeCallbacks(mRunnable)
-        }
-
-        super.onDestroy()
-    }
 }

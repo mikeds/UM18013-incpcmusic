@@ -2,6 +2,7 @@ package com.rworksph.incoriginalmedia
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,7 @@ import android.view.ViewParent
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
@@ -20,6 +22,8 @@ class SetTracksAdapter(private val context: Context,private val dataList: ArrayL
         private const val TYPE_HEADER = 0
         private const val TYPE_ITEMS = 1
     }
+
+    var mediaControllerManager = MediaControllerManager()
 
     override fun onCreateViewHolder(parent: ViewGroup, position: Int): BaseViewHolder<*> {
         return when (position) {
@@ -54,6 +58,7 @@ class SetTracksAdapter(private val context: Context,private val dataList: ArrayL
         return dataList.size
     }
 
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onBindViewHolder(holder: BaseViewHolder<*>, position: Int) {
 
 
@@ -68,6 +73,10 @@ class SetTracksAdapter(private val context: Context,private val dataList: ArrayL
                 .resize(300, 300)
                 .centerCrop()
                 .into(holder.itemView.findViewById<ImageView>(R.id.ivSetTracksThumb))
+
+            holder.itemView.setOnClickListener{
+               mediaControllerManager.mediaControllerManager(dataitem.get("streamUrl").toString())
+            }
         }
 
 

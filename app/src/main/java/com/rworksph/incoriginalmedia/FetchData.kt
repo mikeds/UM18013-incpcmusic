@@ -6,7 +6,7 @@ import java.net.URL
 class FetchData(url0: String) : AsyncTask<String, Void, String>(){
 
     val url1 = url0
-    var dataList = ArrayList<HashMap<String, String>>()
+   // var dataList = ArrayList<HashMap<String, String>>()
     override fun onPreExecute() {
         super.onPreExecute()
         //findViewById<ProgressBar>(R.id.loader).visibility = View.VISIBLE
@@ -40,5 +40,6 @@ class FetchData(url0: String) : AsyncTask<String, Void, String>(){
 
     }
 
-
+    override fun onProgressUpdate(vararg values: Void?) {
+    }
 }

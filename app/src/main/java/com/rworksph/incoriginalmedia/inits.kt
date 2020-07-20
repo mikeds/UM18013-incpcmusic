@@ -28,7 +28,7 @@ class inits {
             map["title"] = singleUser.getString("title")
             map["id"] = singleUser.getString("description")
             map["image"] = singleUser.getString("thumb")
-            map["streamUrl"] = singleUser.getString("uri")
+            map["streamUrl"] = singleUser.getString("stream_url")
 
             songList.add(map)
 
@@ -44,7 +44,7 @@ class inits {
             map["title"] = singleUser.getString("title")
             map["id"] = singleUser.getString("description")
             map["image"] = singleUser.getString("thumb")
-            map["streamUrl"] = singleUser.getString("uri")
+            map["streamUrl"] = singleUser.getString("stream_url")
 
             songList.add(map)
 
