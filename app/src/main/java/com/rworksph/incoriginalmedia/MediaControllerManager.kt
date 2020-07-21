@@ -14,15 +14,17 @@ import java.util.zip.Inflater
 class MediaControllerManager() : MediaPlayer() {
     var Sig = sig.getInstance()
     var mediaPlayer : MediaPlayer = Sig
+
+
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     fun mediaControllerManager(steamUrl:String){
         if (mediaPlayer != null){
             if (mediaPlayer.isPlaying){
                 mediaPlayer.stop()
                 mediaPlayer.reset()
-                play(steamUrl)
+                init(steamUrl)
             }else{
-                play(steamUrl)
+                init(steamUrl)
             }
 
         }
@@ -30,7 +32,7 @@ class MediaControllerManager() : MediaPlayer() {
     }
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-    fun play(url:String){
+    fun init(url:String){
         mediaPlayer.apply{
             setAudioAttributes(
                 AudioAttributes.Builder()
@@ -45,6 +47,15 @@ class MediaControllerManager() : MediaPlayer() {
             mediaPlayer.start()
         }
     }
+
+    fun play(){
+        if (mediaPlayer != null && mediaPlayer.isPlaying){
+            mediaPlayer.pause()
+        }else
+            mediaPlayer.start()
+    }
+
+
 
 
 

@@ -77,36 +77,55 @@
     <LinearLayout
         android:id="@+id/llNav"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="70dp"
         android:orientation="horizontal"
+        android:paddingTop="20dp"
+        android:background="#fff"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <Button
             android:id="@+id/bHome"
+            android:background="#fff"
             android:layout_width="wrap_content"
+            android:minHeight="32dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="HOME" />
+            android:drawableTop="@drawable/ic_baseline_home_24_000000"
+            android:gravity="center|center_horizontal|top"
+            android:text="HOME"
+            android:textSize="10sp" />
 
         <Button
             android:id="@+id/button11"
+            android:background="#fff"
             android:layout_width="wrap_content"
+            android:minHeight="32dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="DJ CUE" />
+            android:drawableTop="@drawable/ic_baseline_headset_24_000000"
+            android:text="DJ CUE"
+            android:textSize="10sp" />
 
         <Button
             android:id="@+id/button10"
+            android:background="#fff"
             android:layout_width="wrap_content"
+            android:minHeight="32dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="FAVORITES" />
+            android:drawableTop="@drawable/ic_baseline_favorite_24_000000"
+            android:text="FAVORITES"
+            android:textSize="10sp" />
 
         <Button
             android:id="@+id/button9"
+            android:background="#fff"
             android:layout_width="wrap_content"
+            android:minHeight="32dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="SETTINGS" />
+            android:drawableTop="@drawable/ic_baseline_settings_24_000000"
+            android:text="SETTINGS"
+            android:textSize="10sp" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

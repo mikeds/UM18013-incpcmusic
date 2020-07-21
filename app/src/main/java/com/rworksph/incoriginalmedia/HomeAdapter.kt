@@ -4,6 +4,7 @@ import android.content.Context
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.os.Build
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,6 +22,7 @@ class HomeAdapter(private val context: Context,
 ) : RecyclerView.Adapter<HomeAdapter.ViewHolder>() {
 
     var home = Home()
+    var data = Data()
     var mediaOnPlayListener : MediaOnPlayListener? = null
     var mediaPlayer = MediaPlayer()
     var mediaControllerManager = MediaControllerManager()
@@ -51,29 +53,14 @@ class HomeAdapter(private val context: Context,
         val steamUrl =dataitem.get("streamUrl").toString()
 
         rowView.itemView.setOnClickListener(View.OnClickListener {
-            home.onMediaPlay(context)
+
             mediaControllerManager.mediaControllerManager(steamUrl)
+            val list = arrayListOf<String>(dataitem.get("title").toString(), dataitem.get("image").toString())
+            home.onMediaPlay(context, list)
         })
 
     }
 
-
-    /*@RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-    fun play(url:String){
-        mediaPlayer.apply{
-            setAudioAttributes(
-                AudioAttributes.Builder()
-                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                    .setUsage(AudioAttributes.USAGE_MEDIA)
-                    .build()
-            )
-            setDataSource(url)
-            prepareAsync()
-        }
-        mediaPlayer.setOnPreparedListener{
-            mediaPlayer.start()
-        }
-    }*/
     class ViewHolder(itemView: View) :RecyclerView.ViewHolder(itemView) {
        val title = itemView.findViewById<TextView>(R.id.tvHomeSongs)
        val image = itemView.findViewById<ImageView>(R.id.ivHomeSongAlbum)
