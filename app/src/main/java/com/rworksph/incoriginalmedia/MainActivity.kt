@@ -25,22 +25,22 @@ class MainActivity : AppCompatActivity() {
 
         Handler().postDelayed({
 
-            SetsData.execute()
-            data.storeSetData(this, SetsData.get())
-            TracksData.execute()
-            data.storeTracksData(this,TracksData.get())
+            if (data.getStoredSetData(this) == ""){
+                SetsData.execute()
+                data.storeSetData(this, SetsData.get())
+                TracksData.execute()
+                data.storeTracksData(this,TracksData.get())
+                val intent = Intent(applicationContext, Home::class.java)
+                startActivity(intent)
+                finish()
 
+            }else{
+                val intent = Intent(applicationContext, Home::class.java)
+                startActivity(intent)
+                finish()
 
+            }
 
-            Log.e("papasok na data sa app", SetsData.get())
-
-            val intent = Intent(applicationContext, Home::class.java)
-            startActivity(intent)
-            finish()
-
-
-            // close this activity
-            finish()
         }, SPLASH_TIME_OUT)
     }
 

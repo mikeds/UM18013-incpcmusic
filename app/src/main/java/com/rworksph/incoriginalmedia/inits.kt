@@ -29,6 +29,8 @@ class inits {
             map["id"] = singleUser.getString("description")
             map["image"] = singleUser.getString("thumb")
             map["streamUrl"] = singleUser.getString("stream_url")
+            map["duration"] = singleUser.getString("duration")
+
 
             songList.add(map)
 

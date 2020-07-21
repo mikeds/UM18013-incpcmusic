@@ -21,6 +21,7 @@ class HomeAdapter(private val context: Context,
                   private val dataList: ArrayList<HashMap<String, String>>
 ) : RecyclerView.Adapter<HomeAdapter.ViewHolder>() {
 
+
     var home = Home()
     var data = Data()
     var mediaOnPlayListener : MediaOnPlayListener? = null
@@ -55,7 +56,7 @@ class HomeAdapter(private val context: Context,
         rowView.itemView.setOnClickListener(View.OnClickListener {
 
             mediaControllerManager.mediaControllerManager(steamUrl)
-            val list = arrayListOf<String>(dataitem.get("title").toString(), dataitem.get("image").toString())
+            val list = arrayListOf<String>(dataitem.get("title").toString(), dataitem.get("image").toString(), dataitem.get("duration").toString())
             home.onMediaPlay(context, list)
         })
 

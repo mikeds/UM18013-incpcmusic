@@ -1,15 +1,9 @@
 package com.rworksph.incoriginalmedia
 
-import android.content.Context
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.os.Build
-import android.view.LayoutInflater
-import android.view.View
-import android.widget.ImageView
-import android.widget.LinearLayout
 import androidx.annotation.RequiresApi
-import java.util.zip.Inflater
 
 class MediaControllerManager() : MediaPlayer() {
     var Sig = sig.getInstance()
@@ -24,6 +18,7 @@ class MediaControllerManager() : MediaPlayer() {
                 mediaPlayer.reset()
                 init(steamUrl)
             }else{
+                mediaPlayer.reset()
                 init(steamUrl)
             }
 
@@ -43,9 +38,8 @@ class MediaControllerManager() : MediaPlayer() {
             setDataSource(url)
             prepareAsync()
         }
-        mediaPlayer.setOnPreparedListener{
-            mediaPlayer.start()
-        }
+
+        mediaPlayer.setOnPreparedListener { mp -> mp.start() }
     }
 
     fun play(){
