@@ -42,7 +42,10 @@ class Home : AppCompatActivity(),MediaOnPlayListener {
         tvMediaTitle.setOnClickListener { _ -> bottomSheetLayout.toggle()  }
         var mediaControllerManager = MediaControllerManager()
 
+        //albums
         init.initListData(this, datalist)
+
+        //all songs
         init.initHomeSongs(this, songList)
         val adapter = ListsAdapter(this, datalist)
         view_pager.adapter =adapter
@@ -52,6 +55,9 @@ class Home : AppCompatActivity(),MediaOnPlayListener {
 
         bottomSheetLayout.visibility = View.GONE
 
+        if (mediaControllerManager.mediaPlayer.isPlaying){
+            bottomSheetLayout.visibility = View.VISIBLE
+        }
 
         //Toast.makeText(this, mediaControllerManager.Sig.toString(), Toast.LENGTH_SHORT).show()
         ivPlayPauseBurron.setOnClickListener{
@@ -161,7 +167,7 @@ class Home : AppCompatActivity(),MediaOnPlayListener {
          mcontext?.ivPlayButton?.setImageResource(R.drawable.ic_baseline_pause_24_d1a538)
          val array : ArrayList<String> = data
          mcontext?.tvMediaTitle?.setText(array[0])
-         mcontext?.tvSetTracksHeaderTitle?.setText(array[0])
+         mcontext?.tvMediaControllerHeaderTitle?.setText(array[0])
          mcontext?.seekBar2?.max = (array[2].toInt()*1000)
          mcontext?.seekBar3?.max = (array[2].toInt()*1000)
          mcontext?.progressBar?.max = (array[2].toInt()*1000)
@@ -176,7 +182,7 @@ class Home : AppCompatActivity(),MediaOnPlayListener {
              .load(array[1].toString())
              .resize(300, 300)
              .centerCrop()
-             .into(mcontext?.ivSetTracksHeaderThumb)
+             .into(mcontext?.ivMediaControllerHeaderThumb)
          mcontext?.bottomSheetLayout?.visibility = View.VISIBLE
          mcontext?.bottomSheetLayout?.startAnimation(fade_in)
     }

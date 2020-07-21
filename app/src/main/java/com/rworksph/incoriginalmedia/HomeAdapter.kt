@@ -36,7 +36,7 @@ class HomeAdapter(private val context: Context,
         val view:View = LayoutInflater.from(parent.context).inflate(R.layout.home_all_songs_item, parent, false)
 
         view.setOnClickListener{
-            Toast.makeText(context,"songs to", Toast.LENGTH_SHORT).show()
+
         }
         return ViewHolder(view)
     }
@@ -44,6 +44,8 @@ class HomeAdapter(private val context: Context,
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onBindViewHolder(rowView: ViewHolder, position: Int) {
         var dataitem = dataList[position]
+
+
 
         rowView.title.text = dataitem.get("title")
         Picasso.get()

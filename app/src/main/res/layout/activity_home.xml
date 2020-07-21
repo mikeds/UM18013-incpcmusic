@@ -66,7 +66,7 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvHome"
                     android:layout_width="match_parent"
-                    android:layout_height="300dp" />
+                    android:layout_height="320dp" />
 
             </LinearLayout>
         </ScrollView>

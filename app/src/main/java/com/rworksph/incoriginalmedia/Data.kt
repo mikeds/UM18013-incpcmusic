@@ -36,6 +36,20 @@ class Data {
         return data
     }
 
+    fun storeSetTracksData(context: Context, data: String) {
+
+        val sharedPreference =  context.getSharedPreferences("Data",Context.MODE_PRIVATE)
+        var editor = sharedPreference.edit()
+        editor.putString("SetTracksData",data)
+        editor.commit()
+    }
+
+    fun getSetTracksData(context: Context): String? {
+        val sharedPreference =  context.getSharedPreferences("Data",Context.MODE_PRIVATE)
+        val data = sharedPreference.getString("SetTracksData","")
+        return data
+    }
+
 
 
 

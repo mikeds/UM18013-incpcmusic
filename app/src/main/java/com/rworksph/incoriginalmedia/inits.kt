@@ -8,6 +8,7 @@ import org.json.JSONArray
 class inits {
     var data = Data()
 
+    //Home pageview
     fun initListData(context: Context, datalist:MutableList<Sets> = ArrayList()): MutableList<Sets> {
         val usersArr = JSONArray(data.getStoredSetData(context))
         for (i in 0 until usersArr.length()) {
@@ -19,6 +20,7 @@ class inits {
         return datalist
     }
 
+    //all songs
     fun initHomeSongs(context: Context, songList : ArrayList<HashMap<String, String>>){
         val usersArr = JSONArray(data.getTracksData(context))
         for (i in 0 until usersArr.length()) {
@@ -37,8 +39,9 @@ class inits {
         }
     }
 
+    //sets page
     fun initSetTracks(context: Context, songList : ArrayList<HashMap<String, String>>){
-        val usersArr = JSONArray(data.getTracksData(context))
+        val usersArr = JSONArray(data.getSetTracksData(context))
         for (i in 0 until usersArr.length()) {
             val singleUser = usersArr.getJSONObject(i)
 
@@ -47,6 +50,7 @@ class inits {
             map["id"] = singleUser.getString("description")
             map["image"] = singleUser.getString("thumb")
             map["streamUrl"] = singleUser.getString("stream_url")
+            map["duration"] = singleUser.getString("duration")
 
             songList.add(map)
 

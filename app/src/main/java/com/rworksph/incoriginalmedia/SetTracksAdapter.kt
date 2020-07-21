@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewParent
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -23,8 +24,11 @@ class SetTracksAdapter(private val context: Context,private val dataList: ArrayL
         private const val TYPE_ITEMS = 1
     }
 
-    var mediaControllerManager = MediaControllerManager()
+    val currentPosition : Int = 0
 
+
+    var mediaControllerManager = MediaControllerManager()
+    var setTracks = SetTracks()
     override fun onCreateViewHolder(parent: ViewGroup, position: Int): BaseViewHolder<*> {
         return when (position) {
             TYPE_HEADER -> {
@@ -39,7 +43,7 @@ class SetTracksAdapter(private val context: Context,private val dataList: ArrayL
                     .into(view.findViewById<ImageView>(R.id.ivSetTracksHeaderThumb))
 
                 view.setOnClickListener{
-                    Toast.makeText(context, "tse tse tse", Toast.LENGTH_SHORT).show()
+                    //Toast.makeText(context, "tse tse tse", Toast.LENGTH_SHORT).show()
                 }
                 HeaderViewHolder(view)
             }
@@ -65,6 +69,7 @@ class SetTracksAdapter(private val context: Context,private val dataList: ArrayL
         if (position.equals(0)){
 
         }else{
+
             var dataitem = dataList[position-1]
             holder.itemView.findViewById<TextView>(R.id.tvSetTracksTitle).text = dataitem.get("title")
 
@@ -74,9 +79,13 @@ class SetTracksAdapter(private val context: Context,private val dataList: ArrayL
                 .centerCrop()
                 .into(holder.itemView.findViewById<ImageView>(R.id.ivSetTracksThumb))
 
-            holder.itemView.setOnClickListener{
-               mediaControllerManager.mediaControllerManager(dataitem.get("streamUrl").toString())
+            holder.itemView.setOnClickListener {
+                mediaControllerManager.mediaControllerManager(dataitem.get("streamUrl").toString())
+                //holder.itemView.findViewById<ImageButton>(R.id.ibPlayPause).setImageResource(R.drawable.ic_baseline_pause_24_d1a538)
+                val list = arrayListOf<String>(dataitem.get("title").toString(), dataitem.get("image").toString(), dataitem.get("duration").toString())
+                setTracks.onMediaPlay(context, list)
             }
+
         }
 
 

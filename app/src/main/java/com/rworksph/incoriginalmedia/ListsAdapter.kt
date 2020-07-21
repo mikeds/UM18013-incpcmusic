@@ -45,6 +45,7 @@ class ListsAdapter(internal var context: Context, internal var list: List<Sets>)
             val intent = Intent(context, SetTracks::class.java)
             intent.putExtra("albumThumb", dataitem.songSetImage)
             intent.putExtra("albumTitle", dataitem.songSetTitle)
+            intent.putExtra("uri", dataitem.songSetUrl)
             context.startActivity(intent)
         }
         container.addView(view)
