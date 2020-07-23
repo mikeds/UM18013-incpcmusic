@@ -2,6 +2,7 @@ package com.rworksph.incoriginalmedia
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -57,6 +58,7 @@ class Home : AppCompatActivity(),MediaOnPlayListener {
 
         if (mediaControllerManager.mediaPlayer.isPlaying){
             bottomSheetLayout.visibility = View.VISIBLE
+            loadOnPlayData()
         }
 
         //Toast.makeText(this, mediaControllerManager.Sig.toString(), Toast.LENGTH_SHORT).show()
@@ -91,6 +93,18 @@ class Home : AppCompatActivity(),MediaOnPlayListener {
 
 
         bHome.setOnClickListener{
+            val intent = Intent(applicationContext, Home::class.java)
+            startActivity(intent)
+        }
+        bDj.setOnClickListener{
+            val intent = Intent(applicationContext, DjCue::class.java)
+            startActivity(intent)
+        }
+        bSettings.setOnClickListener{
+
+        }
+        bFave.setOnClickListener{
+
         }
 
 
@@ -162,7 +176,10 @@ class Home : AppCompatActivity(),MediaOnPlayListener {
          if (boolean){
              boolean = !boolean
          }
-
+         val sharedPreference =  context.getSharedPreferences("Data",Context.MODE_PRIVATE)
+         var editor = sharedPreference.edit()
+         editor.putString("onPlayData",data.toString())
+         editor.commit()
          mcontext?.ivPlayPauseBurron?.setImageResource(R.drawable.ic_baseline_pause_24_d1a538)
          mcontext?.ivPlayButton?.setImageResource(R.drawable.ic_baseline_pause_24_d1a538)
          val array : ArrayList<String> = data
@@ -185,6 +202,35 @@ class Home : AppCompatActivity(),MediaOnPlayListener {
              .into(mcontext?.ivMediaControllerHeaderThumb)
          mcontext?.bottomSheetLayout?.visibility = View.VISIBLE
          mcontext?.bottomSheetLayout?.startAnimation(fade_in)
+    }
+
+    fun loadOnPlayData(){
+        val sharedPreference =  this.getSharedPreferences("Data",Context.MODE_PRIVATE)
+        val data = sharedPreference.getString("onPlayData","")
+
+        val formattedData = data?.replace("[", "")?.replace("]", "")
+        val newData = formattedData?.split(",")?.toTypedArray()
+
+
+        ivPlayPauseBurron?.setImageResource(R.drawable.ic_baseline_pause_24_d1a538)
+        ivPlayButton?.setImageResource(R.drawable.ic_baseline_pause_24_d1a538)
+        //Toast.makeText(this, newData!![0]+","+newData[1]+","+newData[2], Toast.LENGTH_LONG).show()
+        val test = newData!![0]
+        tvMediaTitle.setText(newData[0])
+        tvMediaControllerHeaderTitle.setText(newData[0])
+        Picasso.get()
+            .load(newData[1].trim())
+            .resize(300, 300)
+            .centerCrop()
+            .into(ivMediaAlbum)
+        Picasso.get()
+            .load(newData[1].trim())
+            .resize(300, 300)
+            .centerCrop()
+            .into(ivMediaControllerHeaderThumb)
+        seekBar2.max = ((newData[2].trim().toInt())*1000)
+        seekBar3.max = ((newData[2].trim().toInt())*1000)
+        progressBar?.max = ((newData[2].trim().toInt())*1000)
     }
 
 

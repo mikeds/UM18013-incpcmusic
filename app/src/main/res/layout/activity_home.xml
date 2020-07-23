@@ -96,7 +96,7 @@
             android:textSize="10sp" />
 
         <Button
-            android:id="@+id/button11"
+            android:id="@+id/bDj"
             android:background="#fff"
             android:layout_width="wrap_content"
             android:minHeight="32dp"
@@ -107,7 +107,7 @@
             android:textSize="10sp" />
 
         <Button
-            android:id="@+id/button10"
+            android:id="@+id/bFave"
             android:background="#fff"
             android:layout_width="wrap_content"
             android:minHeight="32dp"
@@ -118,7 +118,7 @@
             android:textSize="10sp" />
 
         <Button
-            android:id="@+id/button9"
+            android:id="@+id/bSettings"
             android:background="#fff"
             android:layout_width="wrap_content"
             android:minHeight="32dp"

@@ -2,6 +2,7 @@ package com.rworksph.incoriginalmedia
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
@@ -14,7 +15,12 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.activity_set_tracks.*
+import kotlinx.android.synthetic.main.activity_set_tracks.bDj
+import kotlinx.android.synthetic.main.activity_set_tracks.bFave
+import kotlinx.android.synthetic.main.activity_set_tracks.bHome
+import kotlinx.android.synthetic.main.activity_set_tracks.bSettings
 import kotlinx.android.synthetic.main.media_controller.*
 
 class SetTracks : AppCompatActivity(),MediaOnPlayListener {
@@ -121,6 +127,22 @@ class SetTracks : AppCompatActivity(),MediaOnPlayListener {
                 }
             }
         }).start()
+
+
+        bHome.setOnClickListener{
+            val intent = Intent(applicationContext, Home::class.java)
+            startActivity(intent)
+        }
+        bDj.setOnClickListener{
+            val intent = Intent(applicationContext, DjCue::class.java)
+            startActivity(intent)
+        }
+        bSettings.setOnClickListener{
+
+        }
+        bFave.setOnClickListener{
+
+        }
     }
 
     override fun onMediaPlay(context: Context, data: ArrayList<String>) {
