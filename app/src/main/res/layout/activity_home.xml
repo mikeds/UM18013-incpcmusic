@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Home">
+
+    <ImageView
+        android:id="@+id/ivTopImg"
+        android:layout_width="wrap_content"
+        android:layout_height="80dp "
+        android:background="#2a2a2a"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/topimg" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/llNav"
+        app:layout_constraintTop_toBottomOf="@+id/ivTopImg">
+
+        <ScrollView
+            android:id="@+id/svContent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <com.gigamole.infinitecycleviewpager.HorizontalInfiniteCycleViewPager
+                    android:id="@+id/view_pager"
+                    android:layout_width="match_parent"
+                    android:layout_height="400dp"
+                    android:background="@drawable/thumbmark"
+                    app:icvp_center_page_scale_offset="10dp"
+                    app:icvp_interpolator="@android:anim/accelerate_decelerate_interpolator"
+                    app:icvp_max_page_scale="0.7"
+                    app:icvp_medium_scaled="false"
+                    app:icvp_min_page_scale="0.35"
+                    app:icvp_min_page_scale_offset="5dp"
+                    app:icvp_scroll_duration="400" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="#444"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/textView2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:text="ALL SONGS"
+                        android:textColor="#fff"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvHome"
+                    android:layout_width="match_parent"
+                    android:layout_height="320dp" />
+
+            </LinearLayout>
+        </ScrollView>
+
+        <include layout="@layout/media_controller"/>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/llNav"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:orientation="horizontal"
+        android:paddingTop="20dp"
+        android:background="#fff"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <Button
+            android:id="@+id/bHome"
+            android:background="#fff"
+            android:layout_width="wrap_content"
+            android:minHeight="32dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/ic_baseline_home_24_000000"
+            android:gravity="center|center_horizontal|top"
+            android:text="HOME"
+            android:textSize="10sp" />
+
+        <Button
+            android:id="@+id/bDj"
+            android:background="#fff"
+            android:layout_width="wrap_content"
+            android:minHeight="32dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/ic_baseline_headset_24_000000"
+            android:text="DJ CUE"
+            android:textSize="10sp" />
+
+        <Button
+            android:id="@+id/bFave"
+            android:background="#fff"
+            android:layout_width="wrap_content"
+            android:minHeight="32dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/ic_baseline_favorite_24_000000"
+            android:text="FAVORITES"
+            android:textSize="10sp" />
+
+        <Button
+            android:id="@+id/bSettings"
+            android:background="#fff"
+            android:layout_width="wrap_content"
+            android:minHeight="32dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/ic_baseline_settings_24_000000"
+            android:text="SETTINGS"
+            android:textSize="10sp" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
