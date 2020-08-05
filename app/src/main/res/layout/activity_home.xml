@@ -6,6 +6,15 @@
     android:layout_height="match_parent"
     tools:context=".Home">
 
+    <FrameLayout
+        android:id="@+id/flFragments"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/llNav"
+        app:layout_constraintTop_toBottomOf="@+id/ivTopImg">
+
+    </FrameLayout>
+
     <ImageView
         android:id="@+id/ivTopImg"
         android:layout_width="wrap_content"
@@ -19,6 +28,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/llNav"
         app:layout_constraintTop_toBottomOf="@+id/ivTopImg">
 
@@ -71,7 +81,7 @@
             </LinearLayout>
         </ScrollView>
 
-        <include layout="@layout/media_controller"/>
+        <include layout="@layout/media_controller" />
     </RelativeLayout>
 
     <LinearLayout

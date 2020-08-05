@@ -1,14 +1,18 @@
 package com.rworksph.incoriginalmedia
 
 import android.content.Context
-import android.content.Intent
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.viewpager.widget.PagerAdapter
 import com.squareup.picasso.Picasso
+import org.json.JSONObject
 
 class Home_PlaylistAdapter (internal var context: Context, internal var list: List<Home_Playlists>):
     PagerAdapter() {
@@ -41,12 +45,24 @@ class Home_PlaylistAdapter (internal var context: Context, internal var list: Li
             .into(view.findViewById<ImageView>(R.id.ivSetCard))
 
         view.setOnClickListener{
-            val intent = Intent(context, Playlist::class.java)
+            val fragment = PlaylistFragment()
+            val bundle = Bundle()
+            val tangina = JSONObject()
+            tangina.put("playlistID", dataitem.playlistID)
+            tangina.put("albumThumb", dataitem.thumb)
+            tangina.put("albumTitle", dataitem.title)
+            tangina.put("uri", dataitem.playlistUrl)
+            /*val intent = Intent(context, Playlist::class.java)
             intent.putExtra("playlistID", dataitem.playlistID)
             intent.putExtra("albumThumb", dataitem.thumb)
             intent.putExtra("albumTitle", dataitem.title)
             intent.putExtra("uri", dataitem.playlistUrl)
-            context.startActivity(intent)
+            context.startActivity(intent)*/
+            fragment.playlistData(context, tangina)
+
+            val activity = view.context as AppCompatActivity
+            activity.supportFragmentManager.beginTransaction()
+                .replace(R.id.flFragments, fragment).addToBackStack(null).commit()
         }
         container.addView(view)
         return view
@@ -56,3 +72,5 @@ class Home_PlaylistAdapter (internal var context: Context, internal var list: Li
 
 
 }
+
+

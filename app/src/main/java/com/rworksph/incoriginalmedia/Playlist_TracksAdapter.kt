@@ -18,7 +18,7 @@ import com.squareup.picasso.Picasso
 import org.json.JSONObject
 import java.text.FieldPosition
 
-class Playlist_TracksAdapter(private val context: Context, private val dataList: ArrayList<HashMap<String, String>>, val intent: Intent) : RecyclerView.Adapter<BaseViewHolder<*>>() {
+class Playlist_TracksAdapter(private val context: Context, private val dataList: ArrayList<HashMap<String, String>>, val intent: JSONObject) : RecyclerView.Adapter<BaseViewHolder<*>>() {
     companion object {
         private const val TYPE_HEADER = 0
         private const val TYPE_ITEMS = 1
@@ -29,15 +29,16 @@ class Playlist_TracksAdapter(private val context: Context, private val dataList:
 
     var mediaControllerManager = MediaControllerManager()
     var playlist = Playlist()
+    var home = Home()
     override fun onCreateViewHolder(parent: ViewGroup, position: Int): BaseViewHolder<*> {
         return when (position) {
             TYPE_HEADER -> {
                 val view = LayoutInflater.from(context).inflate(R.layout.playlist_header, parent, false)
 
 
-                view.findViewById<TextView>(R.id.tvSetTracksHeaderTitle).text = intent.getStringExtra("albumTitle")
+                view.findViewById<TextView>(R.id.tvSetTracksHeaderTitle).text = intent.getString("albumTitle")
                 Picasso.get()
-                    .load(intent.getStringExtra("albumThumb"))
+                    .load(intent.getString("albumThumb"))
                     .resize(300, 300)
                     .centerCrop()
                     .into(view.findViewById<ImageView>(R.id.ivSetTracksHeaderThumb))
@@ -89,8 +90,8 @@ class Playlist_TracksAdapter(private val context: Context, private val dataList:
                 trackData.put("duration", dataitem.get("duration"))
                 trackData.put("streamUrl", dataitem.get("streamUrl"))
                 trackData.put("id", position)
-                trackData.put("from", intent.getStringExtra("playlistID"))
-                playlist.onMediaPlay(context, trackData)
+                trackData.put("from", intent.getString("playlistID"))
+                home.onMediaPlay(context, trackData)
             }
 
         }

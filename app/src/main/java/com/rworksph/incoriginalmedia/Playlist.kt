@@ -52,7 +52,7 @@ class Playlist : AppCompatActivity(),MediaOnPlayListener {
         init.initTracks(trackList, data.getPlaylistTracks(this, PlaylistID).toString())
         val layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         rvSetTracks.layoutManager = layoutManager
-        rvSetTracks.adapter = Playlist_TracksAdapter(this, trackList, intent)
+        //rvSetTracks.adapter = Playlist_TracksAdapter(this, trackList, intent)
 
         bottomSheetLayout.visibility = View.GONE
 

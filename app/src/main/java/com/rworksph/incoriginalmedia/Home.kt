@@ -13,6 +13,7 @@ import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.SeekBar
 import androidx.annotation.RequiresApi
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.OrientationHelper
 import com.squareup.picasso.Picasso
@@ -39,6 +40,30 @@ class Home : AppCompatActivity(), MediaOnPlayListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
 
+
+        // ------------------------- Fragment conversion --------------------------
+
+        val homeFragment = HomeFragment()
+        val playlistFragment = PlaylistFragment()
+
+        setCurrentFragment(homeFragment)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         bottomSheetLayout.visibility = View.GONE
         if (mediaControllerManager.mediaPlayer.isPlaying) {
             bottomSheetLayout.visibility = View.VISIBLE
@@ -55,12 +80,6 @@ class Home : AppCompatActivity(), MediaOnPlayListener {
         imageView3.setColorFilter(Color.parseColor("#2a2a2a"))
         ivOverlay.setColorFilter(Color.parseColor("#2a2a2a"))
 
-        init.initPlaylists(this, homePlaylistsList)
-        init.initTracks(TracksList, data.getAllSongs(this).toString())
-
-        view_pager.adapter = Home_PlaylistAdapter(this, homePlaylistsList)
-        rvHome.layoutManager = LinearLayoutManager(this, OrientationHelper.HORIZONTAL, false)
-        rvHome.adapter = Home_TracksAdapter(this, TracksList)
 
         bHome.setOnClickListener{
             val intent = Intent(applicationContext, Home::class.java)
@@ -347,5 +366,13 @@ class Home : AppCompatActivity(), MediaOnPlayListener {
         progressBar.visibility = View.GONE
         imageView3.visibility = View.GONE
         ivOverlay.visibility = View.GONE
+    }
+
+
+    private  fun setCurrentFragment(fragment: Fragment){
+        supportFragmentManager.beginTransaction().apply {
+            replace(R.id.flFragments, fragment)
+            commit()
+        }
     }
 }
