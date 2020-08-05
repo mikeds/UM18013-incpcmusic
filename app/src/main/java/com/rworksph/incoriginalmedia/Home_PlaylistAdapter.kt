@@ -46,19 +46,19 @@ class Home_PlaylistAdapter (internal var context: Context, internal var list: Li
 
         view.setOnClickListener{
             val fragment = PlaylistFragment()
-            val bundle = Bundle()
-            val tangina = JSONObject()
-            tangina.put("playlistID", dataitem.playlistID)
-            tangina.put("albumThumb", dataitem.thumb)
-            tangina.put("albumTitle", dataitem.title)
-            tangina.put("uri", dataitem.playlistUrl)
+            //val bundle = Bundle()
+            val jobj = JSONObject()
+            jobj.put("playlistID", dataitem.playlistID)
+            jobj.put("albumThumb", dataitem.thumb)
+            jobj.put("albumTitle", dataitem.title)
+            jobj.put("uri", dataitem.playlistUrl)
             /*val intent = Intent(context, Playlist::class.java)
             intent.putExtra("playlistID", dataitem.playlistID)
             intent.putExtra("albumThumb", dataitem.thumb)
             intent.putExtra("albumTitle", dataitem.title)
             intent.putExtra("uri", dataitem.playlistUrl)
             context.startActivity(intent)*/
-            fragment.playlistData(context, tangina)
+            fragment.playlistData(context, jobj)
 
             val activity = view.context as AppCompatActivity
             activity.supportFragmentManager.beginTransaction()
