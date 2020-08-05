@@ -135,10 +135,5 @@
             </RelativeLayout>
         </LinearLayout>
 
-        <include
-            layout="@layout/media_controller"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
     </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

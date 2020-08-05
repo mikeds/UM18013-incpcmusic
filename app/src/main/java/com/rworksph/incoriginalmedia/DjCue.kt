@@ -20,7 +20,6 @@ import kotlinx.android.synthetic.main.activity_dj_cue.bFave
 import kotlinx.android.synthetic.main.activity_dj_cue.bHome
 import kotlinx.android.synthetic.main.activity_dj_cue.bSettings
 import kotlinx.android.synthetic.main.activity_home.*
-import kotlinx.android.synthetic.main.media_controller.*
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -38,13 +37,13 @@ class DjCue : AppCompatActivity(), MediaOnPlayListener {
         ivOverlay.setColorFilter(Color.parseColor("#2a2a2a"))
 
         var mediaControllerManager = MediaControllerManager()
-        bottomSheetLayout.setOnProgressListener { progress -> onprog() }
 
-        bottomSheetLayout.visibility = View.GONE
+
+        /*bottomSheetLayout.visibility = View.GONE
         if (mediaControllerManager.mediaPlayer.isPlaying){
             bottomSheetLayout.visibility = View.VISIBLE
             loadOnPlayData()
-        }
+        }*/
         ivSkipBurron.setOnClickListener {nextSong()}
         ivSkipButton2.setOnClickListener {nextSong()}
         ibPreviousButton.setOnClickListener {previousSong()}
@@ -63,7 +62,7 @@ class DjCue : AppCompatActivity(), MediaOnPlayListener {
                 mediaControllerManager.mediaControllerManager("https://edge.mixlr.com/channel/wycvw")
                 ivDjPlayPause.setImageResource(R.drawable.ic_baseline_pause_24_d1a538)
                 textView.text = "Now Playing"
-                bottomSheetLayout.visibility = View.GONE
+                //bottomSheetLayout.visibility = View.GONE
                 val Data = JSONObject()
                 Data.put("title", "DJ's Cue Live Streaming")
                 Data.put("image", "https://images.hearthis.at/1/5/9/_/uploads/9341074/image_user/incpc----w800_q70_----1594624193823.jpg")
@@ -164,8 +163,8 @@ class DjCue : AppCompatActivity(), MediaOnPlayListener {
             .resize(300, 300)
             .centerCrop()
             .into(mcontext?.ivMediaControllerHeaderThumb)
-        mcontext?.bottomSheetLayout?.visibility = View.VISIBLE
-        mcontext?.bottomSheetLayout?.startAnimation(fade_in)
+        /*mcontext?.bottomSheetLayout?.visibility = View.VISIBLE
+        mcontext?.bottomSheetLayout?.startAnimation(fade_in)*/
     }
 
     @SuppressLint("HandlerLeak")
@@ -179,7 +178,7 @@ class DjCue : AppCompatActivity(), MediaOnPlayListener {
 
 
 
-    fun onprog(){
+    /*fun onprog(){
         if (bottomSheetLayout.isExpended()){
             MediaControllerExpanded.visibility = View.VISIBLE
             MediaControllerCollapse.visibility = View.GONE
@@ -189,7 +188,7 @@ class DjCue : AppCompatActivity(), MediaOnPlayListener {
             MediaControllerCollapse.visibility = View.VISIBLE
             bottomSheetLayout.setBackgroundColor(Color.parseColor("#cc2a2a2a"))
         }
-    }
+    }*/
 
     fun loadOnPlayData(){
         val Data = data.getNowPlaying(this)
@@ -197,7 +196,7 @@ class DjCue : AppCompatActivity(), MediaOnPlayListener {
         val trackData = JSONObject(Data)
 
         if (trackData.getString("title").equals("DJ's Cue Live Streaming")){
-            bottomSheetLayout.visibility = View.GONE
+          //  bottomSheetLayout.visibility = View.GONE
         }
 
         ivPlayPauseBurron?.setImageResource(R.drawable.ic_baseline_pause_24_d1a538)

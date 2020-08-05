@@ -2,10 +2,8 @@ package com.rworksph.incoriginalmedia
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
@@ -13,17 +11,11 @@ import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.SeekBar
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.OrientationHelper
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.activity_dj_cue.*
 import kotlinx.android.synthetic.main.activity_home.*
-import kotlinx.android.synthetic.main.activity_home.bDj
-import kotlinx.android.synthetic.main.activity_home.bFave
-import kotlinx.android.synthetic.main.activity_home.bHome
-import kotlinx.android.synthetic.main.activity_home.bSettings
-import kotlinx.android.synthetic.main.media_controller.*
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -47,30 +39,35 @@ class Home : AppCompatActivity(), MediaOnPlayListener {
         val playlistFragment = PlaylistFragment()
 
         setCurrentFragment(homeFragment)
+        val bottomsheetbehavior = BottomSheetBehavior.from(bottomsheet)
 
+        bottomsheet.visibility = View.GONE
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        bottomSheetLayout.visibility = View.GONE
-        if (mediaControllerManager.mediaPlayer.isPlaying) {
-            bottomSheetLayout.visibility = View.VISIBLE
-            loadOnPlayData()
+        tvMediaTitle.setOnClickListener {
+            bottomsheetbehavior.state = BottomSheetBehavior.STATE_EXPANDED
         }
-        bottomSheetLayout.setOnProgressListener { progress -> onprog() }
-        tvMediaTitle.setOnClickListener { _ -> bottomSheetLayout.toggle()  }
+
+        val bottomSheetCallback = object : BottomSheetBehavior.BottomSheetCallback() {
+
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                when (newState) {
+                    BottomSheetBehavior.STATE_COLLAPSED -> {
+                        MediaControllerCollapse.visibility = View.VISIBLE
+                        MediaControllerExpanded.visibility = View.GONE
+                    }
+                    BottomSheetBehavior.STATE_EXPANDED -> {
+                        MediaControllerCollapse.visibility = View.GONE
+                        MediaControllerExpanded.visibility = View.VISIBLE
+                    }
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                // Do something for slide offset
+            }
+        }
+        bottomsheetbehavior.addBottomSheetCallback(bottomSheetCallback)
+
 
         ivSkipBurron.setOnClickListener {nextSong()}
         ivSkipButton2.setOnClickListener {nextSong()}
@@ -82,12 +79,10 @@ class Home : AppCompatActivity(), MediaOnPlayListener {
 
 
         bHome.setOnClickListener{
-            val intent = Intent(applicationContext, Home::class.java)
-            startActivity(intent)
+            setCurrentFragment(homeFragment)
         }
         bDj.setOnClickListener{
-            val intent = Intent(applicationContext, DjCue::class.java)
-            startActivity(intent)
+
         }
         bSettings.setOnClickListener{
 
@@ -144,18 +139,6 @@ class Home : AppCompatActivity(), MediaOnPlayListener {
         }
     }
 
-    fun onprog(){
-        if (bottomSheetLayout.isExpended()){
-            MediaControllerExpanded.visibility = View.VISIBLE
-            MediaControllerCollapse.visibility = View.GONE
-            bottomSheetLayout.setBackgroundColor(Color.parseColor("#2a2a2a"))
-        }else{
-            MediaControllerExpanded.visibility = View.GONE
-            MediaControllerCollapse.visibility = View.VISIBLE
-            bottomSheetLayout.setBackgroundColor(Color.parseColor("#cc2a2a2a"))
-        }
-    }
-
 
     fun playpause(v: View) {
         if (mediaControllerManager.mediaPlayer != null && mediaControllerManager.mediaPlayer.isPlaying) {
@@ -197,8 +180,8 @@ class Home : AppCompatActivity(), MediaOnPlayListener {
             .resize(300, 300)
             .centerCrop()
             .into(mcontext?.ivMediaControllerHeaderThumb)
-        mcontext?.bottomSheetLayout?.visibility = View.VISIBLE
-        mcontext?.bottomSheetLayout?.startAnimation(fade_in)
+        mcontext?.bottomsheet?.visibility = View.VISIBLE
+        mcontext?.bottomsheet?.startAnimation(fade_in)
     }
 
     fun loadOnPlayData() {

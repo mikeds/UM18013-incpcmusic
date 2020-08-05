@@ -28,7 +28,6 @@ class Playlist_TracksAdapter(private val context: Context, private val dataList:
 
 
     var mediaControllerManager = MediaControllerManager()
-    var playlist = Playlist()
     var home = Home()
     override fun onCreateViewHolder(parent: ViewGroup, position: Int): BaseViewHolder<*> {
         return when (position) {
