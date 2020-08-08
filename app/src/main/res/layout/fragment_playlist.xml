@@ -8,6 +8,5 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvSetTracks"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintTop_toBottomOf="@+id/ivTopImg2" />
+        android:layout_height="match_parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -55,6 +55,8 @@ class Home_TracksAdapter (private val context: Context,
             trackData.put("title", dataitem.get("title"))
             trackData.put("image", dataitem.get("image"))
             trackData.put("duration", dataitem.get("duration"))
+            trackData.put("streamUrl", dataitem.get("streamUrl"))
+            trackData.put("trackID", dataitem.get("trackID"))
             trackData.put("id", position)
             trackData.put("from", "allsongs")
             home.onMediaPlay(context, trackData)

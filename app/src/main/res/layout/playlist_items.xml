@@ -25,11 +25,22 @@
 
     <ImageButton
         android:id="@+id/ibPlayPause"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="50dp"
+        android:layout_weight="1"
         android:background="#00ffffff"
         android:scaleType="fitCenter"
         android:src="@drawable/ic_baseline_play_arrow_24_d1a538"
-        tools:visibility="gone" />
+        tools:visibility="visible" />
+
+    <ImageButton
+        android:id="@+id/ibMore"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_weight="1"
+        android:background="#00ffffff"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_baseline_more_vert_24"
+        tools:visibility="visible" />
 
 </LinearLayout>

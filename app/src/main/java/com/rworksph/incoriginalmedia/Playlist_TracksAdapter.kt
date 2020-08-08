@@ -1,24 +1,28 @@
 package com.rworksph.incoriginalmedia
 
 import android.content.Context
-import android.content.Intent
 import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewParent
-import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.playlist_items.view.*
 import org.json.JSONObject
-import java.text.FieldPosition
 
-class Playlist_TracksAdapter(private val context: Context, private val dataList: ArrayList<HashMap<String, String>>, val intent: JSONObject) : RecyclerView.Adapter<BaseViewHolder<*>>() {
+
+class Playlist_TracksAdapter(
+    private val context: Context,
+    private val dataList: ArrayList<HashMap<String, String>>,
+    val intent: JSONObject
+) : RecyclerView.Adapter<BaseViewHolder<*>>() {
+
+    val playlistFragment = PlaylistFragment()
+
     companion object {
         private const val TYPE_HEADER = 0
         private const val TYPE_ITEMS = 1
@@ -29,6 +33,7 @@ class Playlist_TracksAdapter(private val context: Context, private val dataList:
 
     var mediaControllerManager = MediaControllerManager()
     var home = Home()
+    var tofavorites = ToFavorites()
     override fun onCreateViewHolder(parent: ViewGroup, position: Int): BaseViewHolder<*> {
         return when (position) {
             TYPE_HEADER -> {
@@ -62,9 +67,10 @@ class Playlist_TracksAdapter(private val context: Context, private val dataList:
         return dataList.size
     }
 
+
+
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onBindViewHolder(holder: BaseViewHolder<*>, position: Int) {
-
 
         if (position.equals(0)){
 
@@ -73,8 +79,6 @@ class Playlist_TracksAdapter(private val context: Context, private val dataList:
             var dataitem = dataList[position-1]
             holder.itemView.findViewById<TextView>(R.id.tvSetTracksTitle).text = dataitem.get("title")
 
-            //get position to sharedpref
-            //get from "uri" to shared pref
             Picasso.get()
                 .load(dataitem.get("image"))
                 .resize(300, 300)
@@ -83,19 +87,43 @@ class Playlist_TracksAdapter(private val context: Context, private val dataList:
 
             holder.itemView.setOnClickListener {
                 mediaControllerManager.mediaControllerManager(dataitem.get("streamUrl").toString())
+
+
                 val trackData = JSONObject()
                 trackData.put("title", dataitem.get("title"))
                 trackData.put("image", dataitem.get("image"))
                 trackData.put("duration", dataitem.get("duration"))
                 trackData.put("streamUrl", dataitem.get("streamUrl"))
+                trackData.put("trackID", dataitem.get("trackID"))
                 trackData.put("id", position)
                 trackData.put("from", intent.getString("playlistID"))
                 home.onMediaPlay(context, trackData)
             }
+            val popup = PopupMenu(context, holder.itemView)
+            popup.inflate(R.menu.popup_menu)
+            if (dataitem.get("favorited").equals("true")){
+                popup.menu.findItem(R.id.action_popup_removetofavorites).setVisible(true)
+                popup.menu.findItem(R.id.action_popup_addtofavorites).setVisible(false)
+            }
+            holder.itemView.ibMore.setOnClickListener(View.OnClickListener {
 
+                popup.setOnMenuItemClickListener { item ->
+                    when (item.itemId) {
+                        R.id.action_popup_addtofavorites ->{
+
+                            tofavorites.actionFavorite(context,"add", dataitem.get("trackID").toString(),intent.getString("playlistID"),dataitem.get("streamUrl").toString() )
+                            true
+                        }
+                        R.id.action_popup_removetofavorites->{
+                            tofavorites.actionFavorite(context,"remove", dataitem.get("trackID").toString(),intent.getString("playlistID"),dataitem.get("streamUrl").toString() )
+                            true
+                        }
+                        else -> {false}
+                    }
+                }
+                popup.show()
+            })
         }
-
-
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -108,9 +136,6 @@ class Playlist_TracksAdapter(private val context: Context, private val dataList:
 
 
     inner class HeaderViewHolder(itemView: View): BaseViewHolder<View>(itemView) {
-
-
-
         override fun bind(item: View) {
 
         }
@@ -123,4 +148,12 @@ class Playlist_TracksAdapter(private val context: Context, private val dataList:
 
         }
     }
+
+
+
+
+
+
 }
+
+

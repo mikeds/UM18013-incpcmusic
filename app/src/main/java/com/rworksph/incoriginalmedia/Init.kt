@@ -35,10 +35,12 @@ class Init {
 
             val map = HashMap<String, String>()
             map["id"] = i.toString()
+            map["trackID"] = singleUser.getString("id")
             map["title"] = singleUser.getString("title")
             map["image"] = singleUser.getString("thumb")
             map["streamUrl"] = singleUser.getString("stream_url")
             map["duration"] = singleUser.getString("duration")
+            map["favorited"] = singleUser.getString("favorited")
 
 
             songList.add(map)

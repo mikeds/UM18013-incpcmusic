@@ -10,6 +10,9 @@ import kotlinx.android.synthetic.main.activity_main.*
 import org.json.JSONArray
 import org.json.JSONObject
 import java.net.URL
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 import kotlin.math.ceil
 
 
@@ -28,6 +31,17 @@ class MainActivity : AppCompatActivity() {
 
 
         Handler().postDelayed({
+
+            if (data.getFavorites(this) == ""){}else{
+                val favArr = JSONArray(data.getFavorites(this))
+                val newArr = JSONArray()
+                for (i in 0 until favArr.length()){
+                    val favdata= favArr.getJSONObject(i)
+                    if (Calendar.getInstance() >= favdata.get("expiration") as Calendar){}
+                    else{newArr.put(favdata)}
+                }
+                data.favorites(this, newArr.toString())
+            }
 
             if (data.getAllSongs(this) == ""){
                 allTracksData.execute()
@@ -108,10 +122,11 @@ class MainActivity : AppCompatActivity() {
                 val PlaylistTracksArr = JSONArray(PlaylistTracks)
                 for (j in 0 until PlaylistTracksArr.length()){
                     val tracks = PlaylistTracksArr.getJSONObject(j)
+                    tracks.put("favorited", tracks.getBoolean("favorited").toString())
                     PlaylistData.put(tracks)
                 }
                 data.storePlaylistTracks(this@MainActivity,PlaylistID, PlaylistData.toString())
-                //Log.e(PlaylistID, PlaylistData.toString())
+               // Log.e(PlaylistID, PlaylistData.toString())
 
             }
 

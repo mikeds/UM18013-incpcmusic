@@ -18,6 +18,7 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_home.*
 import org.json.JSONArray
 import org.json.JSONObject
+import kotlin.random.Random
 
 class Home : AppCompatActivity(), MediaOnPlayListener {
     internal var homePlaylistsList: MutableList<Home_Playlists> = ArrayList()
@@ -25,6 +26,7 @@ class Home : AppCompatActivity(), MediaOnPlayListener {
     val data = Data()
     val init = Init()
     var mediaControllerManager = MediaControllerManager()
+    val context:Context = this
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     @SuppressLint("WrongConstant")
@@ -32,11 +34,10 @@ class Home : AppCompatActivity(), MediaOnPlayListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
 
-
-        // ------------------------- Fragment conversion --------------------------
-
         val homeFragment = HomeFragment()
-        val playlistFragment = PlaylistFragment()
+        val djFragment = DjFragment()
+        val favoriteFragment = FavoriteFragment()
+        val settingsFragment = SettingsFragment()
 
         setCurrentFragment(homeFragment)
         val bottomsheetbehavior = BottomSheetBehavior.from(bottomsheet)
@@ -73,24 +74,50 @@ class Home : AppCompatActivity(), MediaOnPlayListener {
         ivSkipButton2.setOnClickListener {nextSong()}
         ibPreviousButton.setOnClickListener {previousSong()}
         ibRepeatButton.setOnClickListener { repeatSong() }
+        ibShuffleButton.setOnClickListener { shufflePlaylist() }
 
         imageView3.setColorFilter(Color.parseColor("#2a2a2a"))
         ivOverlay.setColorFilter(Color.parseColor("#2a2a2a"))
 
 
-        bHome.setOnClickListener{
+        /*bHome.setOnClickListener{
             setCurrentFragment(homeFragment)
         }
         bDj.setOnClickListener{
-
+            setCurrentFragment(djFragment)
         }
         bSettings.setOnClickListener{
-
+            setCurrentFragment(settingsFragment)
         }
         bFave.setOnClickListener{
+            setCurrentFragment(favoriteFragment)
+        }*/
+
+        bottomNav.setOnNavigationItemSelectedListener {
+            when(it.itemId){
+                R.id.navHome-> {
+                    setCurrentFragment(homeFragment)
+                    return@setOnNavigationItemSelectedListener true
+                }
+
+                R.id.navDJ-> {
+                    setCurrentFragment(djFragment)
+                    return@setOnNavigationItemSelectedListener true
+                }
+
+                R.id.navFavorites-> {
+                    setCurrentFragment(favoriteFragment)
+                    return@setOnNavigationItemSelectedListener true
+                }
+                R.id.navSettings-> {
+                    setCurrentFragment(settingsFragment)
+                    return@setOnNavigationItemSelectedListener true
+                }
+
+            }
+            false
 
         }
-
         seekBar3.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
                 if (b) {
@@ -158,7 +185,12 @@ class Home : AppCompatActivity(), MediaOnPlayListener {
 
         data.nowPlaying(context, Data.toString())
 
-        showMediaControls(context)
+        if (Data.getString("from").equals("DjCue")){
+            hideMediaControls(context)
+        }else{
+            showMediaControls(context)
+        }
+
 
         mcontext?.ivPlayPauseBurron?.setImageResource(R.drawable.ic_baseline_pause_24_d1a538)
         mcontext?.ivPlayButton?.setImageResource(R.drawable.ic_baseline_pause_24_d1a538)
@@ -184,37 +216,6 @@ class Home : AppCompatActivity(), MediaOnPlayListener {
         mcontext?.bottomsheet?.startAnimation(fade_in)
     }
 
-    fun loadOnPlayData() {
-        val Data = data.getNowPlaying(this)
-
-        val trackData = JSONObject(Data)
-
-        if (trackData.getString("title").equals("DJ's Cue Live Streaming")){
-            hideMediaControls()
-        }else{
-            showMediaControls(this)
-        }
-
-        ivPlayPauseBurron?.setImageResource(R.drawable.ic_baseline_pause_24_d1a538)
-        ivPlayButton?.setImageResource(R.drawable.ic_baseline_pause_24_d1a538)
-        //Toast.makeText(this, newData!![0]+","+newData[1]+","+newData[2], Toast.LENGTH_LONG).show()
-
-        tvMediaTitle.setText(trackData.getString("title"))
-        tvMediaControllerHeaderTitle.setText(trackData.getString("title"))
-        Picasso.get()
-            .load(trackData.getString("image"))
-            .resize(300, 300)
-            .centerCrop()
-            .into(ivMediaAlbum)
-        Picasso.get()
-            .load(trackData.getString("image"))
-            .resize(300, 300)
-            .centerCrop()
-            .into(ivMediaControllerHeaderThumb)
-        seekBar2.max = ((trackData.getString("duration").toInt()) * 1000)
-        seekBar3.max = ((trackData.getString("duration").toInt())*1000)
-        progressBar?.max = ((trackData.getString("duration").toInt()) * 1000)
-    }
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     fun nextSong(){
@@ -222,92 +223,73 @@ class Home : AppCompatActivity(), MediaOnPlayListener {
         val trackData = JSONObject(nowPlaying)
         val Data = JSONObject()
 
-        if (trackData.getString("from").equals("allsongs")){
-            val playlistTracks = JSONArray(data.getAllSongs(this))
-            val playlistCount = playlistTracks.length()-1
-            val trackIndex = trackData.getString("id").toInt()
-            var nextIndex : Int = 0
-            if (playlistCount <= trackIndex){
-                nextIndex = 0
-            }else{
-                nextIndex = trackIndex+1
+        var playlistTracks = JSONArray()
+        when(trackData.getString("from")){
+            "allsongs" ->{
+                playlistTracks = JSONArray(data.getAllSongs(this))
             }
-            val nextTrack = playlistTracks.getJSONObject(nextIndex)
-            mediaControllerManager.mediaControllerManager(nextTrack.getString("stream_url"))
-
-            Data.put("title", nextTrack.getString("title"))
-            Data.put("image", nextTrack.getString("thumb"))
-            Data.put("duration", nextTrack.getString("duration"))
-            Data.put("id", nextIndex)
-            Data.put("from", trackData.getString("from"))
-            onMediaPlay(this, Data)
-        }else{
-            val playlistTracks = JSONArray(data.getPlaylistTracks(this, trackData.getString("from")))
-            val playlistCount = playlistTracks.length()-1
-            val trackIndex = trackData.getString("id").toInt()
-            var nextIndex : Int = 0
-            if (playlistCount <= trackIndex){
-                nextIndex = 0
-            }else{
-                nextIndex = trackIndex+1
+            "favorites" ->{
+                playlistTracks = JSONArray(data.getFavorites(this))
             }
-            val nextTrack = playlistTracks.getJSONObject(nextIndex)
-            mediaControllerManager.mediaControllerManager(nextTrack.getString("stream_url"))
-
-            Data.put("title", nextTrack.getString("title"))
-            Data.put("image", nextTrack.getString("thumb"))
-            Data.put("duration", nextTrack.getString("duration"))
-            Data.put("id", nextIndex)
-            Data.put("from", trackData.getString("from"))
-            onMediaPlay(this, Data)
+            else -> {
+                playlistTracks = JSONArray(data.getPlaylistTracks(this, trackData.getString("from")))
+            }
         }
+
+        val playlistCount = playlistTracks.length()-1
+        val trackIndex = trackData.getString("id").toInt()
+        var nextIndex : Int = 0
+        if (playlistCount <= trackIndex){
+            nextIndex = 0
+        }else{
+            nextIndex = trackIndex+1
+        }
+        val nextTrack = playlistTracks.getJSONObject(nextIndex)
+        mediaControllerManager.mediaControllerManager(nextTrack.getString("stream_url"))
+
+        Data.put("title", nextTrack.getString("title"))
+        Data.put("image", nextTrack.getString("thumb"))
+        Data.put("duration", nextTrack.getString("duration"))
+        Data.put("id", nextIndex)
+        Data.put("from", trackData.getString("from"))
+        onMediaPlay(this, Data)
     }
+
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     fun previousSong(){
         val nowPlaying = data.getNowPlaying(this)
         val trackData = JSONObject(nowPlaying)
         val Data = JSONObject()
-
-        if (trackData.getString("from").equals("allsongs")){
-            val playlistTracks = JSONArray(data.getAllSongs(this))
-            val playlistCount = playlistTracks.length()
-            val trackIndex = trackData.getString("id").toInt()
-            var nextIndex : Int = 0
-            if (trackIndex <= 0){
-                nextIndex = playlistCount-1
-            }else{
-                nextIndex = trackIndex-1
+        var playlistTracks = JSONArray()
+        when(trackData.getString("from")){
+            "allsongs" ->{
+                playlistTracks = JSONArray(data.getAllSongs(this))
             }
-            val nextTrack = playlistTracks.getJSONObject(nextIndex)
-            mediaControllerManager.mediaControllerManager(nextTrack.getString("stream_url"))
-
-            Data.put("title", nextTrack.getString("title"))
-            Data.put("image", nextTrack.getString("thumb"))
-            Data.put("duration", nextTrack.getString("duration"))
-            Data.put("id", nextIndex)
-            Data.put("from", trackData.getString("from"))
-            onMediaPlay(this, Data)
-        }else{
-            val playlistTracks = JSONArray(data.getPlaylistTracks(this, trackData.getString("from")))
-            val playlistCount = playlistTracks.length()
-            val trackIndex = trackData.getString("id").toInt()
-            var nextIndex : Int = 0
-            if (trackIndex <= 0){
-                nextIndex = playlistCount-1
-            }else{
-                nextIndex = trackIndex-1
+            "favorites" ->{
+                playlistTracks = JSONArray(data.getFavorites(this))
             }
-            val nextTrack = playlistTracks.getJSONObject(nextIndex)
-            mediaControllerManager.mediaControllerManager(nextTrack.getString("stream_url"))
-
-            Data.put("title", nextTrack.getString("title"))
-            Data.put("image", nextTrack.getString("thumb"))
-            Data.put("duration", nextTrack.getString("duration"))
-            Data.put("id", nextIndex)
-            Data.put("from", trackData.getString("from"))
-            onMediaPlay(this, Data)
+            else -> {
+                playlistTracks = JSONArray(data.getPlaylistTracks(this, trackData.getString("from")))
+            }
         }
+        val playlistCount = playlistTracks.length()
+        val trackIndex = trackData.getString("id").toInt()
+        var nextIndex : Int = 0
+        if (trackIndex <= 0){
+            nextIndex = playlistCount-1
+        }else{
+            nextIndex = trackIndex-1
+        }
+        val nextTrack = playlistTracks.getJSONObject(nextIndex)
+        mediaControllerManager.mediaControllerManager(nextTrack.getString("stream_url"))
+
+        Data.put("title", nextTrack.getString("title"))
+        Data.put("image", nextTrack.getString("thumb"))
+        Data.put("duration", nextTrack.getString("duration"))
+        Data.put("id", nextIndex)
+        Data.put("from", trackData.getString("from"))
+        onMediaPlay(this, Data)
     }
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
@@ -315,11 +297,18 @@ class Home : AppCompatActivity(), MediaOnPlayListener {
         val nowPlaying = data.getNowPlaying(this)
         val trackData = JSONObject(nowPlaying)
         val Data = JSONObject()
-        mediaControllerManager.mediaControllerManager(trackData.getString("streamUrl"))
+        if (trackData.getString("from") == "favorites"){
+            mediaControllerManager.playFavorites(trackData.getString("trackID"), this)
+        }else{
+            mediaControllerManager.mediaControllerManager(trackData.getString("streamUrl"))
+        }
+
         Data.put("title", trackData.getString("title"))
-        Data.put("image", trackData.getString("thumb"))
+        Data.put("image", trackData.getString("image"))
         Data.put("duration", trackData.getString("duration"))
         Data.put("id", trackData.getString("id"))
+        Data.put("trackID",trackData.getString("trackID"))
+        Data.put("streamUrl",trackData.getString("streamUrl"))
         Data.put("from", trackData.getString("from"))
         onMediaPlay(this, Data)
     }
@@ -338,22 +327,56 @@ class Home : AppCompatActivity(), MediaOnPlayListener {
         mcontext.ibPreviousButton.visibility = View.VISIBLE
     }
 
-    fun hideMediaControls(){
-        ivSkipButton2.visibility = View.GONE
-        ibPreviousButton.visibility = View.GONE
-        ivSkipBurron.visibility = View.GONE
-        ibRepeatButton.visibility = View.GONE
-        ibShuffleButton.visibility = View.GONE
-        seekBar2.visibility = View.GONE
-        seekBar3.visibility = View.GONE
-        progressBar.visibility = View.GONE
-        imageView3.visibility = View.GONE
-        ivOverlay.visibility = View.GONE
+    fun hideMediaControls(context: Context){
+        val mcontext = context as Home
+        mcontext.ivSkipButton2.visibility = View.GONE
+        mcontext.ibPreviousButton.visibility = View.GONE
+        mcontext.ivSkipBurron.visibility = View.GONE
+        mcontext.ibRepeatButton.visibility = View.GONE
+        mcontext.ibShuffleButton.visibility = View.GONE
+        mcontext.seekBar2.visibility = View.GONE
+        mcontext.seekBar3.visibility = View.GONE
+        mcontext.progressBar.visibility = View.GONE
+        mcontext.imageView3.visibility = View.GONE
+        mcontext.ivOverlay.visibility = View.GONE
+    }
+
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+    fun shufflePlaylist(){
+        val nowPlaying = data.getNowPlaying(this)
+        val trackData = JSONObject(nowPlaying)
+        val Data = JSONObject()
+        var playlistTracks = JSONArray()
+        when(trackData.getString("from")){
+            "allsongs" ->{
+                playlistTracks = JSONArray(data.getAllSongs(this))
+            }
+            "favorites" ->{
+                playlistTracks = JSONArray(data.getFavorites(this))
+            }
+            else -> {
+                playlistTracks = JSONArray(data.getPlaylistTracks(this, trackData.getString("from")))
+            }
+        }
+        val playlistCount = playlistTracks.length()
+        val trackIndex = trackData.getString("id").toInt()
+        var nextIndex : Int = Random.nextInt(0, playlistCount)
+
+        val nextTrack = playlistTracks.getJSONObject(nextIndex)
+        mediaControllerManager.mediaControllerManager(nextTrack.getString("stream_url"))
+
+        Data.put("title", nextTrack.getString("title"))
+        Data.put("image", nextTrack.getString("thumb"))
+        Data.put("duration", nextTrack.getString("duration"))
+        Data.put("id", nextIndex)
+        Data.put("from", trackData.getString("from"))
+        onMediaPlay(this, Data)
     }
 
 
     private  fun setCurrentFragment(fragment: Fragment){
         supportFragmentManager.beginTransaction().apply {
+            setCustomAnimations(R.anim.fade_in,R.anim.fade_out)
             replace(R.id.flFragments, fragment)
             commit()
         }

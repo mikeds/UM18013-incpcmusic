@@ -46,7 +46,6 @@ class Home_PlaylistAdapter (internal var context: Context, internal var list: Li
 
         view.setOnClickListener{
             val fragment = PlaylistFragment()
-            //val bundle = Bundle()
             val jobj = JSONObject()
             jobj.put("playlistID", dataitem.playlistID)
             jobj.put("albumThumb", dataitem.thumb)
@@ -62,6 +61,7 @@ class Home_PlaylistAdapter (internal var context: Context, internal var list: Li
 
             val activity = view.context as AppCompatActivity
             activity.supportFragmentManager.beginTransaction()
+                .setCustomAnimations(R.anim.enter_from_right,R.anim.exit_to_left)
                 .replace(R.id.flFragments, fragment).addToBackStack(null).commit()
         }
         container.addView(view)

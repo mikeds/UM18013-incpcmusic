@@ -62,6 +62,22 @@ class Data() {
         return data
     }
 
+    fun favorites(context:Context,data: String){
+        val sharedPreference =  context.getSharedPreferences("Data",Context.MODE_PRIVATE)
+        var editor = sharedPreference.edit()
+        editor.putString("favorites",data)
+        editor.commit()
+    }
+
+    fun getFavorites(context:Context): String? {
+        val sharedPreference =  context.getSharedPreferences("Data",Context.MODE_PRIVATE)
+        val data = sharedPreference.getString("favorites","")
+        return data
+    }
+
+
+
+
 
 
 
