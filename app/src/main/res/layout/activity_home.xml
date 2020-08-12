@@ -71,7 +71,18 @@
                         android:layout_weight="0"
                         android:text="Kelan kaya pwede lumabas sila kuya? :'("
                         android:textColor="#fff"
-                        android:textSize="16dp" />
+                        android:textSize="20dp"
+                        android:ellipsize="marquee"
+                        android:marqueeRepeatLimit="marquee_forever"
+                        android:scrollHorizontally="true"
+                        android:singleLine="true" />
+
+                    <ProgressBar
+                        android:id="@+id/playProgress"
+                        style="?android:attr/progressBarStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0" />
 
                     <ImageView
                         android:id="@+id/ivPlayPauseBurron"
@@ -79,6 +90,7 @@
                         android:layout_height="50dp"
                         android:layout_weight="0"
                         android:onClick="playpause"
+                        android:visibility="gone"
                         app:srcCompat="@drawable/ic_baseline_play_arrow_24_d1a538" />
 
                     <ImageView

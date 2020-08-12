@@ -28,7 +28,6 @@ class Init {
     }
 
     fun initTracks(songList : ArrayList<HashMap<String, String>>, data: String){
-        Log.e("data", "Dumadaan ba ko dito?")
         val usersArr = JSONArray(data)
         for (i in 0 until usersArr.length()) {
             val singleUser = usersArr.getJSONObject(i)

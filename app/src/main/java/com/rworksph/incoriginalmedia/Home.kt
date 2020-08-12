@@ -2,25 +2,31 @@ package com.rworksph.incoriginalmedia
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.Color
+import android.net.ConnectivityManager
+import android.net.Network
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
+import android.util.Log
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.SeekBar
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_home.*
+import kotlinx.android.synthetic.main.playlist_items.*
 import org.json.JSONArray
 import org.json.JSONObject
 import kotlin.random.Random
 
-class Home : AppCompatActivity(), MediaOnPlayListener {
+class Home : AppCompatActivity(), MediaOnPlayListener, SettingsFragment.onSelectThemeListener {
     internal var homePlaylistsList: MutableList<Home_Playlists> = ArrayList()
     var TracksList = ArrayList<HashMap<String, String>>()
     val data = Data()
@@ -29,7 +35,7 @@ class Home : AppCompatActivity(), MediaOnPlayListener {
     val context:Context = this
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-    @SuppressLint("WrongConstant")
+    @SuppressLint("WrongConstant", "NewApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
@@ -38,6 +44,33 @@ class Home : AppCompatActivity(), MediaOnPlayListener {
         val djFragment = DjFragment()
         val favoriteFragment = FavoriteFragment()
         val settingsFragment = SettingsFragment()
+        imageView3.setColorFilter(Color.parseColor("#2a2a2a"))
+        ivOverlay.setColorFilter(Color.parseColor("#2a2a2a"))
+        if (data.getTheme(this) != ""){
+            val color = JSONObject(data.getTheme(this))
+
+            val iconsColorStates = ColorStateList(
+                arrayOf(
+                    intArrayOf(-android.R.attr.state_checked),
+                    intArrayOf(android.R.attr.state_checked)
+                ), intArrayOf(
+                    Color.parseColor("#aaaaaa"),
+                    Color.parseColor(color.getString("colorAccent"))
+                )
+            )
+            playProgress.setIndeterminateTintList(ColorStateList.valueOf(Color.parseColor(color.getString("colorAccent"))));
+            ivPlayButton.setColorFilter(Color.parseColor(color.getString("colorAccent")))
+            ibShuffleButton.setColorFilter(Color.parseColor(color.getString("colorAccent")))
+            ibPreviousButton.setColorFilter(Color.parseColor(color.getString("colorAccent")))
+            ibRepeatButton.setColorFilter(Color.parseColor(color.getString("colorAccent")))
+            ivPlayPauseBurron.setColorFilter(Color.parseColor(color.getString("colorAccent")))
+            ivSkipBurron.setColorFilter(Color.parseColor(color.getString("colorAccent")))
+            ivSkipButton2.setColorFilter(Color.parseColor(color.getString("colorAccent")))
+            bottomNav.itemTextColor = iconsColorStates
+            bottomNav.itemIconTintList = iconsColorStates
+            bottomNav.setBackgroundColor(Color.parseColor(color.getString("backgroundColor")))
+        }
+
 
         setCurrentFragment(homeFragment)
         val bottomsheetbehavior = BottomSheetBehavior.from(bottomsheet)
@@ -47,7 +80,6 @@ class Home : AppCompatActivity(), MediaOnPlayListener {
         tvMediaTitle.setOnClickListener {
             bottomsheetbehavior.state = BottomSheetBehavior.STATE_EXPANDED
         }
-
         val bottomSheetCallback = object : BottomSheetBehavior.BottomSheetCallback() {
 
             override fun onStateChanged(bottomSheet: View, newState: Int) {
@@ -76,22 +108,9 @@ class Home : AppCompatActivity(), MediaOnPlayListener {
         ibRepeatButton.setOnClickListener { repeatSong() }
         ibShuffleButton.setOnClickListener { shufflePlaylist() }
 
-        imageView3.setColorFilter(Color.parseColor("#2a2a2a"))
-        ivOverlay.setColorFilter(Color.parseColor("#2a2a2a"))
 
 
-        /*bHome.setOnClickListener{
-            setCurrentFragment(homeFragment)
-        }
-        bDj.setOnClickListener{
-            setCurrentFragment(djFragment)
-        }
-        bSettings.setOnClickListener{
-            setCurrentFragment(settingsFragment)
-        }
-        bFave.setOnClickListener{
-            setCurrentFragment(favoriteFragment)
-        }*/
+
 
         bottomNav.setOnNavigationItemSelectedListener {
             when(it.itemId){
@@ -141,7 +160,26 @@ class Home : AppCompatActivity(), MediaOnPlayListener {
             nextSong()
         }
 
-        Thread(Runnable {
+        mediaControllerManager.mediaPlayer.setOnPreparedListener{
+            Toast.makeText(this, "prepared?", Toast.LENGTH_SHORT).show()
+        }
+
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        connectivityManager?.let {
+            it.registerDefaultNetworkCallback(object : ConnectivityManager.NetworkCallback() {
+                override fun onAvailable(network: Network) {
+                    //Toast.makeText(this@Home, "connected", Toast.LENGTH_SHORT).show()
+                    data.connectivity(this@Home, true)
+                    Toast.makeText(this@Home, "Connected to the internet", Toast.LENGTH_SHORT).show()
+                }
+                override fun onLost(network: Network?) {
+                    data.connectivity(this@Home, false)
+                    Toast.makeText(this@Home, "No Internet Connection Available", Toast.LENGTH_SHORT).show()
+                }
+            })
+        }
+
+        /*Thread(Runnable {
             while (mediaControllerManager.mediaPlayer != null) {
                 try {
                     if (mediaControllerManager.mediaPlayer.isPlaying()) {
@@ -154,7 +192,7 @@ class Home : AppCompatActivity(), MediaOnPlayListener {
                     e.printStackTrace()
                 }
             }
-        }).start()
+        }).start()*/
     }
 
     @SuppressLint("HandlerLeak")
@@ -191,11 +229,13 @@ class Home : AppCompatActivity(), MediaOnPlayListener {
             showMediaControls(context)
         }
 
-
+        mcontext?.playProgress?.visibility = View.VISIBLE
+        mcontext?.ivPlayPauseBurron?.visibility = View.GONE
         mcontext?.ivPlayPauseBurron?.setImageResource(R.drawable.ic_baseline_pause_24_d1a538)
         mcontext?.ivPlayButton?.setImageResource(R.drawable.ic_baseline_pause_24_d1a538)
 
-        mcontext?.tvMediaTitle?.setText(Data.getString("title"))
+        mcontext?.tvMediaTitle?.text = Data.getString("title")
+        mcontext?.tvMediaTitle?.isSelected = true
         mcontext?.tvMediaControllerHeaderTitle?.setText(Data.getString("title"))
         mcontext?.seekBar2?.max = (Data.getString("duration").toInt() * 1000)
         mcontext?.seekBar3?.max = (Data.getString("duration").toInt() * 1000)
@@ -245,7 +285,13 @@ class Home : AppCompatActivity(), MediaOnPlayListener {
             nextIndex = trackIndex+1
         }
         val nextTrack = playlistTracks.getJSONObject(nextIndex)
-        mediaControllerManager.mediaControllerManager(nextTrack.getString("stream_url"))
+
+        if(trackData.getString("from") == "favorites"){
+            mediaControllerManager.playFavorites(nextTrack.getString("id"), context)
+        }else{
+            mediaControllerManager.mediaControllerManager(nextTrack.getString("stream_url"),context)
+        }
+
 
         Data.put("title", nextTrack.getString("title"))
         Data.put("image", nextTrack.getString("thumb"))
@@ -282,8 +328,11 @@ class Home : AppCompatActivity(), MediaOnPlayListener {
             nextIndex = trackIndex-1
         }
         val nextTrack = playlistTracks.getJSONObject(nextIndex)
-        mediaControllerManager.mediaControllerManager(nextTrack.getString("stream_url"))
-
+        if(trackData.getString("from") == "favorites"){
+            mediaControllerManager.playFavorites(nextTrack.getString("id"), context)
+        }else{
+            mediaControllerManager.mediaControllerManager(nextTrack.getString("stream_url"),context)
+        }
         Data.put("title", nextTrack.getString("title"))
         Data.put("image", nextTrack.getString("thumb"))
         Data.put("duration", nextTrack.getString("duration"))
@@ -300,7 +349,7 @@ class Home : AppCompatActivity(), MediaOnPlayListener {
         if (trackData.getString("from") == "favorites"){
             mediaControllerManager.playFavorites(trackData.getString("trackID"), this)
         }else{
-            mediaControllerManager.mediaControllerManager(trackData.getString("streamUrl"))
+            mediaControllerManager.mediaControllerManager(trackData.getString("streamUrl"),context)
         }
 
         Data.put("title", trackData.getString("title"))
@@ -359,12 +408,14 @@ class Home : AppCompatActivity(), MediaOnPlayListener {
             }
         }
         val playlistCount = playlistTracks.length()
-        val trackIndex = trackData.getString("id").toInt()
         var nextIndex : Int = Random.nextInt(0, playlistCount)
 
         val nextTrack = playlistTracks.getJSONObject(nextIndex)
-        mediaControllerManager.mediaControllerManager(nextTrack.getString("stream_url"))
-
+        if(trackData.getString("from") == "favorites"){
+            mediaControllerManager.playFavorites(nextTrack.getString("id"), context)
+        }else{
+            mediaControllerManager.mediaControllerManager(nextTrack.getString("stream_url"),context)
+        }
         Data.put("title", nextTrack.getString("title"))
         Data.put("image", nextTrack.getString("thumb"))
         Data.put("duration", nextTrack.getString("duration"))
@@ -381,4 +432,48 @@ class Home : AppCompatActivity(), MediaOnPlayListener {
             commit()
         }
     }
+
+
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+    override fun onSelectTheme(color: JSONObject) {
+        val iconsColorStates = ColorStateList(
+            arrayOf(
+                intArrayOf(-android.R.attr.state_checked),
+                intArrayOf(android.R.attr.state_checked)
+            ), intArrayOf(
+                Color.parseColor("#aaaaaa"),
+                Color.parseColor(color.getString("colorAccent"))
+            )
+        )
+
+        playProgress.setIndeterminateTintList(ColorStateList.valueOf(Color.parseColor(color.getString("colorAccent"))));
+        ivPlayButton.setColorFilter(Color.parseColor(color.getString("colorAccent")))
+        ibShuffleButton.setColorFilter(Color.parseColor(color.getString("colorAccent")))
+        ibPreviousButton.setColorFilter(Color.parseColor(color.getString("colorAccent")))
+        ibRepeatButton.setColorFilter(Color.parseColor(color.getString("colorAccent")))
+        ivPlayPauseBurron.setColorFilter(Color.parseColor(color.getString("colorAccent")))
+        ivSkipBurron.setColorFilter(Color.parseColor(color.getString("colorAccent")))
+        ivSkipButton2.setColorFilter(Color.parseColor(color.getString("colorAccent")))
+        bottomNav.itemTextColor = iconsColorStates
+        bottomNav.itemIconTintList = iconsColorStates
+        bottomNav.setBackgroundColor(Color.parseColor(color.getString("backgroundColor")))
+    }
+
+    fun onMusicPrepared(context: Context) {
+        var mcontext = (context as? Home)
+        mcontext?.playProgress?.visibility = View.GONE
+        mcontext?.ivPlayPauseBurron?.visibility = View.VISIBLE
+       // Toast.makeText(mcontext, "TAGUMPAY BA??????? ", Toast.LENGTH_SHORT).show()
+    }
+
+    fun songNotAvailable(context: Context){
+        if (mediaControllerManager.mediaPlayer.isPlaying){
+            mediaControllerManager.mediaPlayer.stop()
+            mediaControllerManager.mediaPlayer.reset()
+        }
+        var mcontext = (context as? Home)
+        mcontext?.bottomsheet?.visibility = View.GONE
+    }
+
+
 }

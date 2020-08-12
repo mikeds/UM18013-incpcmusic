@@ -25,12 +25,14 @@ class FavoriteFragment:Fragment() {
         savedInstanceState: Bundle?): View? {
         val view  : View = inflater.inflate(R.layout.fragment_favorite, container, false)
        // val PlaylistID = intent.getString("playlistID")
+        if (data.getFavorites(activity!!) != ""){
+            trackList.clear()
+            init.initTracks(trackList, data.getFavorites(activity!!).toString())
+            val layoutManager = LinearLayoutManager(activity!!, LinearLayoutManager.VERTICAL, false)
+            view.rvFav.layoutManager = layoutManager
+            view.rvFav.adapter = FavoritesAdapter(activity!!, trackList)
+        }
 
-        trackList.clear()
-        init.initTracks(trackList, data.getFavorites(activity!!).toString())
-        val layoutManager = LinearLayoutManager(activity!!, LinearLayoutManager.VERTICAL, false)
-        view.rvFav.layoutManager = layoutManager
-        view.rvFav.adapter = FavoritesAdapter(activity!!, trackList)
 
         return view
     }

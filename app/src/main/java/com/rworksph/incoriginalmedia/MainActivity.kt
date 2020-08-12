@@ -10,6 +10,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import org.json.JSONArray
 import org.json.JSONObject
 import java.net.URL
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -31,16 +32,17 @@ class MainActivity : AppCompatActivity() {
 
 
         Handler().postDelayed({
+            val currentTime = SimpleDateFormat("yyyyMMdd").format(Calendar.getInstance().time)
 
-            if (data.getFavorites(this) == ""){}else{
+            if (data.getFavorites(this) != ""){
                 val favArr = JSONArray(data.getFavorites(this))
                 val newArr = JSONArray()
                 for (i in 0 until favArr.length()){
                     val favdata= favArr.getJSONObject(i)
-                    if (Calendar.getInstance() >= favdata.get("expiration") as Calendar){}
+                    if (currentTime.toInt() <= favdata.get("expiration").toString().toInt()){}
                     else{newArr.put(favdata)}
                 }
-                data.favorites(this, newArr.toString())
+                // data.favorites(this, newArr.toString())
             }
 
             if (data.getAllSongs(this) == ""){

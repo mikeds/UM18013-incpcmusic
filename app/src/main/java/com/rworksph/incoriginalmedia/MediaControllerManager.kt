@@ -9,21 +9,21 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import java.io.File
 
-class MediaControllerManager() : MediaPlayer() {
+class MediaControllerManager : MediaPlayer() {
     var Sig = sig.getInstance()
     var mediaPlayer : MediaPlayer = Sig
 
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-    fun mediaControllerManager(steamUrl:String){
+    fun mediaControllerManager(steamUrl:String, context: Context){
         if (mediaPlayer != null){
             if (mediaPlayer.isPlaying){
                 mediaPlayer.stop()
                 mediaPlayer.reset()
-                init(steamUrl)
+                init(steamUrl, context)
             }else{
                 mediaPlayer.reset()
-                init(steamUrl)
+                init(steamUrl,context)
             }
 
         }
@@ -46,16 +46,25 @@ class MediaControllerManager() : MediaPlayer() {
         }
     }
 
+
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     fun initFav(context: Context, path:String){
-        mediaPlayer = create(context, Uri.parse(path))
-        mediaPlayer.start()
-
-
-       //Log.e("tama ba?", "Eto ba pinili???")
+        val myUri: Uri = Uri.parse(path) // initialize Uri here
+        mediaPlayer.apply {
+            setAudioAttributes(
+                AudioAttributes.Builder()
+                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                    .setUsage(AudioAttributes.USAGE_MEDIA)
+                    .build()
+            )
+            setDataSource(context, myUri)
+            prepare()
+            start()
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-    fun init(url:String){
+    fun init(url:String, context: Context){
         mediaPlayer.apply{
             setAudioAttributes(
                 AudioAttributes.Builder()
@@ -67,7 +76,14 @@ class MediaControllerManager() : MediaPlayer() {
             prepareAsync()
         }
 
-        mediaPlayer.setOnPreparedListener { mp -> mp.start() }
+        mediaPlayer.setOnPreparedListener {
+
+                mp ->
+            val home = Home()
+            mp.start()
+            home.onMusicPrepared(context)
+
+        }
     }
 
 

@@ -30,12 +30,14 @@
                 android:background="@drawable/thumbmark" />
 
             <LinearLayout
+                android:id="@+id/llTab"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:background="#444"
                 android:orientation="vertical">
 
                 <LinearLayout
+                    android:id="@+id/llAccent"
                     android:layout_width="match_parent"
                     android:layout_height="8dp"
                     android:background="@color/colorAccent"

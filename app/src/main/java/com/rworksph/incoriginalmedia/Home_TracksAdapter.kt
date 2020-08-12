@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
@@ -50,7 +51,8 @@ class Home_TracksAdapter (private val context: Context,
         val steamUrl =dataitem.get("streamUrl").toString()
 
         rowView.itemView.setOnClickListener(View.OnClickListener {
-            mediaControllerManager.mediaControllerManager(steamUrl)
+            if (data.isConnected(context)==true){
+            mediaControllerManager.mediaControllerManager(steamUrl,context)
             val trackData = JSONObject()
             trackData.put("title", dataitem.get("title"))
             trackData.put("image", dataitem.get("image"))
@@ -60,6 +62,10 @@ class Home_TracksAdapter (private val context: Context,
             trackData.put("id", position)
             trackData.put("from", "allsongs")
             home.onMediaPlay(context, trackData)
+            }else{
+                Toast.makeText(context, "Not Available offline", Toast.LENGTH_SHORT).show()
+                home.songNotAvailable(context)
+            }
         })
 
     }

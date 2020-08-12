@@ -3,6 +3,7 @@ package com.rworksph.incoriginalmedia
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Application
+import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -13,8 +14,7 @@ import androidx.recyclerview.widget.OrientationHelper
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_home.view.*
-
-
+import org.json.JSONObject
 
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
@@ -32,7 +32,13 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
         init.initPlaylists(activity!!, homePlaylistsList)
         init.initTracks(TracksList, data.getAllSongs(activity!!).toString())
-
+        if (data.getTheme(activity!!) != ""){
+            val color = JSONObject(data.getTheme(activity!!))
+            view.llAccent.setBackgroundColor(Color.parseColor(color.getString("colorAccent")))
+            view.llTab.setBackgroundColor(Color.parseColor(color.getString("backgroundColor")))
+            view.textView2.setTextColor(Color.parseColor(color.getString("colorAccent")))
+            view.svContent.setBackgroundColor(Color.parseColor(color.getString("backgroundColor")))
+        }
 
         view.view_pager.adapter = Home_PlaylistAdapter(activity!!, homePlaylistsList)
         view.rvHome.layoutManager = LinearLayoutManager(activity!!, OrientationHelper.HORIZONTAL, false)

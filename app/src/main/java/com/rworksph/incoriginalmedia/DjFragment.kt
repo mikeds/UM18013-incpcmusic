@@ -1,6 +1,7 @@
 package com.rworksph.incoriginalmedia
 
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,7 +10,9 @@ import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.android.synthetic.main.fragment_dj.*
 import kotlinx.android.synthetic.main.fragment_dj.view.*
+import kotlinx.android.synthetic.main.fragment_dj.view.ivDjPlayPause
 import kotlinx.android.synthetic.main.fragment_playlist.view.*
 import org.json.JSONObject
 
@@ -26,6 +29,10 @@ class DjFragment : Fragment() {
         savedInstanceState: Bundle?): View? {
         val view  : View = inflater.inflate(R.layout.fragment_dj, container, false)
 
+        if (data.getTheme(activity!!) != ""){
+            val color = JSONObject(data.getTheme(activity!!))
+            view.ivDjPlayPause.setColorFilter(Color.parseColor(color.getString("colorAccent")))
+        }
 
         view.ivDjPlayPause.setOnClickListener {
             if (view.textView.text.equals("Now Playing")) {
@@ -38,7 +45,7 @@ class DjFragment : Fragment() {
                     view.ivDjPlayPause.setImageResource(R.drawable.ic_baseline_pause_24_d1a538)
                 }
             } else {
-                mediaControllerManager.mediaControllerManager("https://edge.mixlr.com/channel/wycvw")
+                mediaControllerManager.mediaControllerManager("https://edge.mixlr.com/channel/wycvw",activity!!)
                 view.ivDjPlayPause.setImageResource(R.drawable.ic_baseline_pause_24_d1a538)
                 view.textView.text = "Now Playing"
                 //bottomSheetLayout.visibility = View.GONE

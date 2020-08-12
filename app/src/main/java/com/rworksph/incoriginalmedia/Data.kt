@@ -75,7 +75,31 @@ class Data() {
         return data
     }
 
+    fun setTheme(context: Context, data: String){
+        val sharedPreference =  context.getSharedPreferences("Data",Context.MODE_PRIVATE)
+        var editor = sharedPreference.edit()
+        editor.putString("Theme",data)
+        editor.commit()
+    }
 
+    fun getTheme(context: Context):String?{
+        val sharedPreference =  context.getSharedPreferences("Data",Context.MODE_PRIVATE)
+        val data = sharedPreference.getString("Theme","")
+        return data
+    }
+
+    fun connectivity(context: Context, isConnected:Boolean){
+        val sharedPreference =  context.getSharedPreferences("Data",Context.MODE_PRIVATE)
+        var editor = sharedPreference.edit()
+        editor.putBoolean("connected",isConnected)
+        editor.commit()
+    }
+
+    fun isConnected(context: Context):Boolean?{
+        val sharedPreference =  context.getSharedPreferences("Data",Context.MODE_PRIVATE)
+        val data = sharedPreference.getBoolean("connected", false)
+        return data
+    }
 
 
 

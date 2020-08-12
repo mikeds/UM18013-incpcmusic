@@ -2,11 +2,13 @@ package com.rworksph.incoriginalmedia
 
 import android.content.Context
 import android.os.Build
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
@@ -21,7 +23,9 @@ class Playlist_TracksAdapter(
     val intent: JSONObject
 ) : RecyclerView.Adapter<BaseViewHolder<*>>() {
 
+    val data = Data()
     val playlistFragment = PlaylistFragment()
+
 
     companion object {
         private const val TYPE_HEADER = 0
@@ -46,9 +50,9 @@ class Playlist_TracksAdapter(
                     .resize(300, 300)
                     .centerCrop()
                     .into(view.findViewById<ImageView>(R.id.ivSetTracksHeaderThumb))
-
+                //Toast.makeText(context, "tse tse tse", Toast.LENGTH_SHORT).show()
                 view.setOnClickListener{
-                    //Toast.makeText(context, "tse tse tse", Toast.LENGTH_SHORT).show()
+                    //
                 }
                 HeaderViewHolder(view)
             }
@@ -76,6 +80,7 @@ class Playlist_TracksAdapter(
 
         }else{
 
+
             var dataitem = dataList[position-1]
             holder.itemView.findViewById<TextView>(R.id.tvSetTracksTitle).text = dataitem.get("title")
 
@@ -86,19 +91,31 @@ class Playlist_TracksAdapter(
                 .into(holder.itemView.findViewById<ImageView>(R.id.ivSetTracksThumb))
 
             holder.itemView.setOnClickListener {
-                mediaControllerManager.mediaControllerManager(dataitem.get("streamUrl").toString())
+
+                Log.e("connectivity", data.isConnected(context).toString())
+
+                if (data.isConnected(context)==true){
+                    mediaControllerManager.mediaControllerManager(dataitem.get("streamUrl").toString(), context)
 
 
-                val trackData = JSONObject()
-                trackData.put("title", dataitem.get("title"))
-                trackData.put("image", dataitem.get("image"))
-                trackData.put("duration", dataitem.get("duration"))
-                trackData.put("streamUrl", dataitem.get("streamUrl"))
-                trackData.put("trackID", dataitem.get("trackID"))
-                trackData.put("id", position)
-                trackData.put("from", intent.getString("playlistID"))
-                home.onMediaPlay(context, trackData)
+                    val trackData = JSONObject()
+                    trackData.put("title", dataitem.get("title"))
+                    trackData.put("image", dataitem.get("image"))
+                    trackData.put("duration", dataitem.get("duration"))
+                    trackData.put("streamUrl", dataitem.get("streamUrl"))
+                    trackData.put("trackID", dataitem.get("trackID"))
+                    trackData.put("id", position)
+                    trackData.put("from", intent.getString("playlistID"))
+                    home.onMediaPlay(context, trackData)
+                }else{
+                    Toast.makeText(context, "Not Available offline",Toast.LENGTH_SHORT).show()
+                    home.songNotAvailable(context)
+                }
+
             }
+
+
+
             val popup = PopupMenu(context, holder.itemView)
             popup.inflate(R.menu.popup_menu)
             if (dataitem.get("favorited").equals("true")){
@@ -110,16 +127,23 @@ class Playlist_TracksAdapter(
                 popup.setOnMenuItemClickListener { item ->
                     when (item.itemId) {
                         R.id.action_popup_addtofavorites ->{
-
+                            /*popup.menu.findItem(R.id.action_popup_removetofavorites).setVisible(true)
+                            popup.menu.findItem(R.id.action_popup_addtofavorites).setVisible(false)*/
+                            dataitem.put("favorited", "true")
                             tofavorites.actionFavorite(context,"add", dataitem.get("trackID").toString(),intent.getString("playlistID"),dataitem.get("streamUrl").toString() )
+                            notifyItemChanged(holder.adapterPosition)
                             true
                         }
                         R.id.action_popup_removetofavorites->{
+                            dataitem.put("favorited", "false")
                             tofavorites.actionFavorite(context,"remove", dataitem.get("trackID").toString(),intent.getString("playlistID"),dataitem.get("streamUrl").toString() )
+                            notifyItemChanged(holder.adapterPosition)
                             true
                         }
                         else -> {false}
+
                     }
+
                 }
                 popup.show()
             })
@@ -148,6 +172,8 @@ class Playlist_TracksAdapter(
 
         }
     }
+
+
 
 
 

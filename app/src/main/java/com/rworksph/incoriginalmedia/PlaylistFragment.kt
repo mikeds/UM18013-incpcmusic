@@ -2,6 +2,7 @@ package com.rworksph.incoriginalmedia
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -35,9 +36,9 @@ class PlaylistFragment:Fragment(),PlaylistData {
         return view
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-    }
+   fun blabla(){
+       view?.rvSetTracks?.adapter?.notifyDataSetChanged()
+   }
 
     override fun playlistData(context: Context, data: JSONObject) {
         intent = data

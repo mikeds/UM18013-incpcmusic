@@ -119,6 +119,7 @@ class MyDownloadTask(
 
     override fun onCancelled(aBoolean: Boolean?) {
         super.onCancelled(aBoolean)
+        Toast.makeText(context, "Download Cancelled", Toast.LENGTH_SHORT).show()
         val folder = File(Environment.getDownloadCacheDirectory().toString() + "/elpaboritos/")
         val documentFile = File("$folder/$fileName")
         documentFile.delete()

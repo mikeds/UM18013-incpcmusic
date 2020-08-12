@@ -1,16 +1,14 @@
 package com.rworksph.incoriginalmedia
 
 import android.content.Context
+import android.os.AsyncTask
 import android.os.Build
-import android.os.Environment
 import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.core.content.ContentProviderCompat.requireContext
 import org.json.JSONArray
 import java.io.File
-import java.io.FileOutputStream
-import java.net.URL
+import java.text.SimpleDateFormat
 import java.util.*
 
 class ToFavorites {
@@ -22,15 +20,20 @@ class ToFavorites {
     fun actionFavorite(context: Context, action:String, trackID:String, from: String, url:String){
         when(action){
             "add" ->{
-                if (JSONArray(data.getFavorites(context)).length() >= 15){
-                    Toast.makeText(context, "Maximum Favorite Count Reached", Toast.LENGTH_LONG).show()
-                }else{
+                if(data.getFavorites(context).equals("")){
                     addToFavorites(context, trackID, from, url)
+                }else{
+                    if (JSONArray(data.getFavorites(context)).length() >= 15){
+                        Toast.makeText(context, "Maximum Favorite Count Reached", Toast.LENGTH_LONG).show()
+                    }else{
+                        addToFavorites(context, trackID, from, url)
+                    }
                 }
 
             }
             "remove" -> {
-                removeToFavorites(context, trackID, from)
+
+                removeToFavorites(context, trackID, from, url)
             }
         }
 
@@ -48,12 +51,14 @@ class ToFavorites {
         }
 
         //if (favArr.toString().contains("\"id\":\""+trackID+"\""))
-
+        val date = Calendar.getInstance()
+        date.add(Calendar.DAY_OF_MONTH, 1)
+        val expireTime = SimpleDateFormat("yyyyMMdd").format(date.time)
         for (i in 0 until oldArr.length()) {
             val oldData = oldArr.getJSONObject(i)
             if (oldData.getString("id").equals(trackID)){
                 oldData.put("favorited","true")
-                oldData.put("expiration", Calendar.getInstance().add(Calendar.DAY_OF_MONTH, 15))
+                oldData.put("expiration", expireTime)
                 favArr.put(oldData)
                 newArr.put(oldData)
             }else{
@@ -63,10 +68,6 @@ class ToFavorites {
         data.storePlaylistTracks(context,from, newArr.toString())
         Log.e("favarr", favArr.toString())
 
-        //download file fun
-        //call on data change to playlist fragment
-        //val file = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS.toString()).absolutePath
-        //playlistFragment.update()
 
         val task = MyDownloadTask(context,
             url,
@@ -90,39 +91,56 @@ class ToFavorites {
     }
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
-    fun removeToFavorites(context: Context, trackID: String, from: String){
+    fun removeToFavorites(
+        context: Context,
+        trackID: String,
+        from: String,
+        url: String
+    ){
+
         val oldArr = JSONArray(data.getPlaylistTracks(context,from))
         val newArr = JSONArray()
         val newfav = JSONArray()
-
         val favArr = JSONArray(data.getFavorites(context))
-        Log.e("faveCountBefore", favArr.length().toString())
-        for (i in 0 until favArr.length()){
+        for (i in 0 until oldArr.length()){
+            val oldData = oldArr.getJSONObject(i)
+            if (oldData.getString("id") == trackID){
+                oldData.put("favorited","false")
+                newArr.put(oldData)
+            }else{newArr.put(oldData)}
+
+            if (oldData.getString("favorited") == "true"){
+                newfav.put(oldData)
+            }
+        }
+        /*for (i in 0 until favArr.length()){
             Log.e("TAG", i.toString())
             val faveData = favArr.getJSONObject(i)
             if (faveData.getString("id") != trackID){
                 newfav.put(faveData)
-                //Log.e("id", i.toString())
+
             }
         }
-        Log.e("faveCountAfter", newfav.length().toString())
-        Log.e("faveCountAfter", newfav.toString())
+
 
         for (i in 0 until oldArr.length()) {
             val oldData = oldArr.getJSONObject(i)
             if (oldData.getString("id").equals(trackID)){
                 oldData.put("favorited","false")
-                Log.e("sss", i.toString())
+
                 newArr.put(oldData)
 
             }else{
-                Log.e("sss", i.toString())
+
                 newArr.put(oldData)
             }
-        }
+        }*/
 
 
         data.storePlaylistTracks(context,from, newArr.toString())
+        val checkjson = JSONArray(data.getPlaylistTracks(context,from))
+        Log.e("remove", checkjson.length().toString())
+
         data.favorites(context,newfav.toString())
         val folder = File(context.filesDir, "elpaboritos")
         val documentFile = File("$folder/$trackID.mp3")
