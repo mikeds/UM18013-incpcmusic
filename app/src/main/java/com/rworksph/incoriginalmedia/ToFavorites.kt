@@ -7,6 +7,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import org.json.JSONArray
+import org.json.JSONObject
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -58,6 +59,7 @@ class ToFavorites {
             val oldData = oldArr.getJSONObject(i)
             if (oldData.getString("id").equals(trackID)){
                 oldData.put("favorited","true")
+                oldData.put("fromPlaylist",from)
                 oldData.put("expiration", expireTime)
                 favArr.put(oldData)
                 newArr.put(oldData)
@@ -76,10 +78,8 @@ class ToFavorites {
             object : MyDownloadTask.DownloadListener {
                 override fun onDownloadComplete(download: Boolean, pos: Int) {
                     if (download) {
-
                         data.favorites(context, favArr.toString())
-                        Toast.makeText(context, "added to favorites", Toast.LENGTH_SHORT)
-                            .show()
+                        Toast.makeText(context, "added to favorites", Toast.LENGTH_SHORT).show()
                     }
                 }
 
@@ -98,43 +98,43 @@ class ToFavorites {
         url: String
     ){
 
-        val oldArr = JSONArray(data.getPlaylistTracks(context,from))
+
+        val favarr = JSONArray(data.getPlaylistTracks(context,from))
         val newArr = JSONArray()
         val newfav = JSONArray()
-        val favArr = JSONArray(data.getFavorites(context))
-        for (i in 0 until oldArr.length()){
-            val oldData = oldArr.getJSONObject(i)
+
+        for (i in 0 until favarr.length()){
+            val oldData = favarr.getJSONObject(i)
+
             if (oldData.getString("id") == trackID){
                 oldData.put("favorited","false")
                 newArr.put(oldData)
-            }else{newArr.put(oldData)}
+            }else{
+                newArr.put(oldData)
+            }
 
             if (oldData.getString("favorited") == "true"){
                 newfav.put(oldData)
             }
-        }
-        /*for (i in 0 until favArr.length()){
-            Log.e("TAG", i.toString())
-            val faveData = favArr.getJSONObject(i)
-            if (faveData.getString("id") != trackID){
-                newfav.put(faveData)
 
+            if (from == "favorites"){
+                val newPlaylist = JSONArray()
+                val playlistID = oldData.getString("fromPlaylist")
+                val playlistArr = JSONArray(data.getPlaylistTracks(context, playlistID))
+                for (j in 0 until playlistArr.length()){
+                    val playlistData = playlistArr.getJSONObject(j)
+                    if (playlistData.getString("id") == trackID){
+                        playlistData.put("favorited","false")
+                        newPlaylist.put(playlistData)
+                    }else{
+                        newPlaylist.put(playlistData)
+                    }
+                }
+
+                data.storePlaylistTracks(context,playlistID,newPlaylist.toString())
             }
         }
 
-
-        for (i in 0 until oldArr.length()) {
-            val oldData = oldArr.getJSONObject(i)
-            if (oldData.getString("id").equals(trackID)){
-                oldData.put("favorited","false")
-
-                newArr.put(oldData)
-
-            }else{
-
-                newArr.put(oldData)
-            }
-        }*/
 
 
         data.storePlaylistTracks(context,from, newArr.toString())

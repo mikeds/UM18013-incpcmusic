@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -44,6 +45,7 @@
                 android:layout_weight=".5">
 
                 <RelativeLayout
+                    android:id="@+id/djtab"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
                     android:gravity="center_vertical">
@@ -66,6 +68,21 @@
                         android:textColor="#fff"
                         android:textSize="20sp" />
                 </RelativeLayout>
+
+                <com.rworksph.incoriginalmedia.customwave.DrawView
+                    android:id="@+id/root_adjust"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="80dp"
+                    android:background="#002a2a2a"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="0dp"
+                    android:paddingLeft="0dp"
+                    android:paddingRight="0dp"
+                    app:wave_color="#d1a538" />
+
             </RelativeLayout>
         </LinearLayout>
 

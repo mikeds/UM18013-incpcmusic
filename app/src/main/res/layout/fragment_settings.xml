@@ -38,8 +38,7 @@
                     android:layout_margin="5dp"
                     android:layout_weight="1"
                     android:background="#cda73a"
-                    android:button="@drawable/rbbackground"
-                    android:checked="true" />
+                    android:button="@drawable/rbbackground" />
 
                 <RadioButton
                     android:id="@+id/rb2"

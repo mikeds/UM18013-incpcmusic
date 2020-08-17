@@ -108,7 +108,7 @@ class Playlist_TracksAdapter(
                     trackData.put("from", intent.getString("playlistID"))
                     home.onMediaPlay(context, trackData)
                 }else{
-                    Toast.makeText(context, "Not Available offline",Toast.LENGTH_SHORT).show()
+                    //Toast.makeText(context, "Not Available offline",Toast.LENGTH_SHORT).show()
                     home.songNotAvailable(context)
                 }
 
@@ -136,6 +136,7 @@ class Playlist_TracksAdapter(
                         }
                         R.id.action_popup_removetofavorites->{
                             dataitem.put("favorited", "false")
+                            Log.e("from", intent.getString("playlistID"))
                             tofavorites.actionFavorite(context,"remove", dataitem.get("trackID").toString(),intent.getString("playlistID"),dataitem.get("streamUrl").toString() )
                             notifyItemChanged(holder.adapterPosition)
                             true

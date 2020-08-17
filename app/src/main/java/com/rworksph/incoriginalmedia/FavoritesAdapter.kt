@@ -69,6 +69,7 @@ class FavoritesAdapter (
                 trackData.put("duration", dataitem.get("duration"))
                 trackData.put("streamUrl", dataitem.get("streamUrl"))
                 trackData.put("trackID", dataitem.get("trackID"))
+                trackData.put("waveform_url", dataitem.get("waveform_url"))
                 trackData.put("id", position)
                 trackData.put("from", "favorites")
                 home.onMediaPlay(context, trackData)
@@ -92,7 +93,10 @@ class FavoritesAdapter (
                             true
                         }
                         R.id.action_popup_removetofavorites->{
+
                             tofavorites.actionFavorite(context,"remove", dataitem.get("trackID").toString(),"favorites", dataitem.get("streamUrl").toString() )
+                            dataList.removeAt(position)
+                            notifyDataSetChanged()
                             true
                         }
                         else -> {false}

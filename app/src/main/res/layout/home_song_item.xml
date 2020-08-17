@@ -11,8 +11,9 @@
 
     <ImageView
         android:id="@+id/ivHomeSongAlbum"
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_width="135dp"
+        android:layout_height="135dp"
+        android:background="@drawable/loadingpic"
         app:srcCompat="@drawable/thumbmark" />
 
     <TextView

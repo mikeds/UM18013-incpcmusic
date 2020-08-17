@@ -63,7 +63,7 @@ class Home_TracksAdapter (private val context: Context,
             trackData.put("from", "allsongs")
             home.onMediaPlay(context, trackData)
             }else{
-                Toast.makeText(context, "Not Available offline", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(context, "Not Available offline", Toast.LENGTH_SHORT).show()
                 home.songNotAvailable(context)
             }
         })

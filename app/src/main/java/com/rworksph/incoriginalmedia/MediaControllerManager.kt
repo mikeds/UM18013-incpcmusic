@@ -59,7 +59,14 @@ class MediaControllerManager : MediaPlayer() {
             )
             setDataSource(context, myUri)
             prepare()
-            start()
+        }
+        mediaPlayer.setOnPreparedListener {
+
+                mp ->
+            val home = Home()
+            mp.start()
+            home.onMusicPrepared(context)
+
         }
     }
 

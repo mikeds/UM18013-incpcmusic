@@ -1,7 +1,11 @@
 package com.rworksph.incoriginalmedia
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
 import android.os.AsyncTask
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -21,17 +25,21 @@ class MainActivity : AppCompatActivity() {
     //private val SPLASH_DELAY: Long = 3000 //3 seconds
     var data = Data()
 
-    var allTracksData = FetchAllTracks("https://api-v2.hearthis.at/mikeds/")
-    var PlaylistsData = FetchPlaylists("https://api-v2.hearthis.at/mikeds/?type=playlists&page=1&count=20")
+    var allTracksData = FetchAllTracks("https://api-v2.hearthis.at/incplaylist/")
+    var PlaylistsData = FetchPlaylists("https://api-v2.hearthis.at/incplaylist/?type=playlists&page=1&count=20")
 
     private val SPLASH_TIME_OUT:Long = 2000 // 1 sec
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        createNotificationChannel()
 
 
         Handler().postDelayed({
+
+            data.nowPlaying(this, "")
+
             val currentTime = SimpleDateFormat("yyyyMMdd").format(Calendar.getInstance().time)
 
             if (data.getFavorites(this) != ""){
@@ -42,7 +50,7 @@ class MainActivity : AppCompatActivity() {
                     if (currentTime.toInt() <= favdata.get("expiration").toString().toInt()){}
                     else{newArr.put(favdata)}
                 }
-                // data.favorites(this, newArr.toString())
+                 data.favorites(this, newArr.toString())
             }
 
             if (data.getAllSongs(this) == ""){
@@ -59,6 +67,25 @@ class MainActivity : AppCompatActivity() {
 
 
         }, SPLASH_TIME_OUT)
+    }
+    private fun createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = "INC Playlist"
+            val descriptionText = ""
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val CHANNEL_ID = "incom"
+            val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
+                description = descriptionText
+
+            }
+            channel.vibrationPattern = longArrayOf(0)
+            // Register the channel with the system
+            val notificationManager: NotificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
     }
 
 
@@ -80,7 +107,7 @@ class MainActivity : AppCompatActivity() {
 
             val allTracksArray = JSONArray()
             for (i in 1 until track_pages.toInt()+1) run {
-                val tracksData = URL("https://api-v2.hearthis.at/mikeds/?type=tracks&page=$i&count=20").readText(Charsets.UTF_8)
+                val tracksData = URL("https://api-v2.hearthis.at/incplaylist/?type=tracks&page=$i&count=20").readText(Charsets.UTF_8)
                 val tracksArray = JSONArray(tracksData)
                 //val PlaylistObj = JSONObject()
                 for (j in 0 until tracksArray.length()){
@@ -178,6 +205,7 @@ class MainActivity : AppCompatActivity() {
 
         }
     }
+    
 
 
 

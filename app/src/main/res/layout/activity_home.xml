@@ -61,6 +61,7 @@
                         android:layout_height="60dp"
                         android:layout_marginLeft="10dp"
                         android:layout_weight="0"
+                        android:background="@drawable/loadingpic"
                         app:srcCompat="@drawable/thumbmark" />
 
                     <TextView
@@ -89,7 +90,6 @@
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:layout_weight="0"
-                        android:onClick="playpause"
                         android:visibility="gone"
                         app:srcCompat="@drawable/ic_baseline_play_arrow_24_d1a538" />
 
@@ -181,7 +181,6 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:background="#00dddddd"
-                        android:onClick="playpause"
                         android:scaleType="fitCenter"
                         app:srcCompat="@drawable/ic_baseline_play_arrow_24_d1a538" />
 

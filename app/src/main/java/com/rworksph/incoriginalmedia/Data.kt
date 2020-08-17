@@ -1,8 +1,6 @@
 package com.rworksph.incoriginalmedia
 
 import android.content.Context
-import android.util.Log
-import org.json.JSONArray
 
 class Data() {
 
@@ -45,8 +43,7 @@ class Data() {
 
     fun getPlaylistTracks(context:Context,id: String): String? {
         val sharedPreference =  context.getSharedPreferences("Data",Context.MODE_PRIVATE)
-        val data = sharedPreference.getString(id,"")
-        return data
+        return sharedPreference.getString(id,"")
     }
 
     fun nowPlaying(context:Context,data: String){
@@ -58,8 +55,7 @@ class Data() {
 
     fun getNowPlaying(context:Context): String? {
         val sharedPreference =  context.getSharedPreferences("Data",Context.MODE_PRIVATE)
-        val data = sharedPreference.getString("nowPlaying","")
-        return data
+        return sharedPreference.getString("nowPlaying","")
     }
 
     fun favorites(context:Context,data: String){
@@ -71,8 +67,7 @@ class Data() {
 
     fun getFavorites(context:Context): String? {
         val sharedPreference =  context.getSharedPreferences("Data",Context.MODE_PRIVATE)
-        val data = sharedPreference.getString("favorites","")
-        return data
+        return sharedPreference.getString("favorites","")
     }
 
     fun setTheme(context: Context, data: String){
@@ -84,8 +79,7 @@ class Data() {
 
     fun getTheme(context: Context):String?{
         val sharedPreference =  context.getSharedPreferences("Data",Context.MODE_PRIVATE)
-        val data = sharedPreference.getString("Theme","")
-        return data
+        return sharedPreference.getString("Theme","")
     }
 
     fun connectivity(context: Context, isConnected:Boolean){
@@ -97,12 +91,20 @@ class Data() {
 
     fun isConnected(context: Context):Boolean?{
         val sharedPreference =  context.getSharedPreferences("Data",Context.MODE_PRIVATE)
-        val data = sharedPreference.getBoolean("connected", false)
-        return data
+        return sharedPreference.getBoolean("connected", false)
     }
 
+    fun firstUser(context: Context, unangbeses:Boolean){
+        val sharedPreference =  context.getSharedPreferences("Data",Context.MODE_PRIVATE)
+        val editor = sharedPreference.edit()
+        editor.putBoolean("firstTimer",unangbeses)
+        editor.commit()
+    }
 
-
+    fun isFirstTimeUser(context: Context):Boolean?{
+        val sharedPreference =  context.getSharedPreferences("Data",Context.MODE_PRIVATE)
+        return sharedPreference.getBoolean("firstTimer", true)
+    }
 
 
 

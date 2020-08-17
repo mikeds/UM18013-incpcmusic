@@ -1,51 +1,81 @@
 package com.rworksph.incoriginalmedia
 
 import android.annotation.SuppressLint
+import android.app.Dialog
+import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_UPDATE_CURRENT
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.res.ColorStateList
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.net.ConnectivityManager
 import android.net.Network
-import android.os.Build
-import android.os.Bundle
-import android.os.Handler
-import android.os.Message
+import android.net.Uri
+import android.os.*
+import android.support.v4.media.session.MediaSessionCompat
 import android.util.Log
 import android.view.View
 import android.view.animation.AnimationUtils
+import android.widget.Button
+import android.widget.RemoteViews
 import android.widget.SeekBar
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationCompat.Builder
+import androidx.core.app.NotificationManagerCompat
 import androidx.fragment.app.Fragment
+import androidx.media.app.NotificationCompat.MediaStyle
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.rworksph.incoriginalmedia.Services.NotificationReceiver
+import com.rworksph.incoriginalmedia.Services.OnClearFromRecentServices
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_home.*
-import kotlinx.android.synthetic.main.playlist_items.*
+import kotlinx.android.synthetic.main.first_user_dialog.*
+import kotlinx.android.synthetic.main.fragment_dj.*
 import org.json.JSONArray
 import org.json.JSONObject
 import kotlin.random.Random
 
 class Home : AppCompatActivity(), MediaOnPlayListener, SettingsFragment.onSelectThemeListener {
     internal var homePlaylistsList: MutableList<Home_Playlists> = ArrayList()
+    val notificationManager: NotificationManagerCompat? = null
+    val CHANNEL_ID = "incom"
+    var dialog:Dialog? = null
+    var firstTimeDialog:Dialog? = null
     var TracksList = ArrayList<HashMap<String, String>>()
     val data = Data()
     val init = Init()
     var mediaControllerManager = MediaControllerManager()
     val context:Context = this
+    var requestID = System.currentTimeMillis().toInt()
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-    @SuppressLint("WrongConstant", "NewApi")
+    @SuppressLint("WrongConstant", "NewApi", "JavascriptInterface")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
 
+
+
+        Log.e("UNANGBESES", data.isFirstTimeUser(this).toString())
+        dialog = Dialog(this)
+        firstTimeDialog = Dialog(this)
         val homeFragment = HomeFragment()
         val djFragment = DjFragment()
         val favoriteFragment = FavoriteFragment()
         val settingsFragment = SettingsFragment()
         imageView3.setColorFilter(Color.parseColor("#2a2a2a"))
         ivOverlay.setColorFilter(Color.parseColor("#2a2a2a"))
+
+        if (data.isFirstTimeUser(this) == true){
+            firstUse()
+        }
         if (data.getTheme(this) != ""){
             val color = JSONObject(data.getTheme(this))
 
@@ -107,7 +137,8 @@ class Home : AppCompatActivity(), MediaOnPlayListener, SettingsFragment.onSelect
         ibPreviousButton.setOnClickListener {previousSong()}
         ibRepeatButton.setOnClickListener { repeatSong() }
         ibShuffleButton.setOnClickListener { shufflePlaylist() }
-
+        ivPlayPauseBurron.setOnClickListener { playpause() }
+        ivPlayButton.setOnClickListener { playpause() }
 
 
 
@@ -116,20 +147,24 @@ class Home : AppCompatActivity(), MediaOnPlayListener, SettingsFragment.onSelect
             when(it.itemId){
                 R.id.navHome-> {
                     setCurrentFragment(homeFragment)
+                    bottomsheetbehavior.state = BottomSheetBehavior.STATE_COLLAPSED
                     return@setOnNavigationItemSelectedListener true
                 }
 
                 R.id.navDJ-> {
                     setCurrentFragment(djFragment)
+                    bottomsheetbehavior.state = BottomSheetBehavior.STATE_COLLAPSED
                     return@setOnNavigationItemSelectedListener true
                 }
 
                 R.id.navFavorites-> {
                     setCurrentFragment(favoriteFragment)
+                    bottomsheetbehavior.state = BottomSheetBehavior.STATE_COLLAPSED
                     return@setOnNavigationItemSelectedListener true
                 }
                 R.id.navSettings-> {
                     setCurrentFragment(settingsFragment)
+                    bottomsheetbehavior.state = BottomSheetBehavior.STATE_COLLAPSED
                     return@setOnNavigationItemSelectedListener true
                 }
 
@@ -160,9 +195,18 @@ class Home : AppCompatActivity(), MediaOnPlayListener, SettingsFragment.onSelect
             nextSong()
         }
 
-        mediaControllerManager.mediaPlayer.setOnPreparedListener{
-            Toast.makeText(this, "prepared?", Toast.LENGTH_SHORT).show()
+        ivTopImg.setOnClickListener {
+            val url = "https://iglesianicristo.net/"
+
+            val i = Intent(Intent.ACTION_VIEW)
+            i.setData(Uri.parse(url))
+            startActivity(i)
         }
+
+
+
+        registerReceiver(receiver, IntentFilter("ACTION"))
+        startService(Intent(baseContext, OnClearFromRecentServices::class.java))
 
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         connectivityManager?.let {
@@ -170,7 +214,7 @@ class Home : AppCompatActivity(), MediaOnPlayListener, SettingsFragment.onSelect
                 override fun onAvailable(network: Network) {
                     //Toast.makeText(this@Home, "connected", Toast.LENGTH_SHORT).show()
                     data.connectivity(this@Home, true)
-                    Toast.makeText(this@Home, "Connected to the internet", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@Home, "Connected", Toast.LENGTH_SHORT).show()
                 }
                 override fun onLost(network: Network?) {
                     data.connectivity(this@Home, false)
@@ -179,7 +223,7 @@ class Home : AppCompatActivity(), MediaOnPlayListener, SettingsFragment.onSelect
             })
         }
 
-        /*Thread(Runnable {
+        Thread(Runnable {
             while (mediaControllerManager.mediaPlayer != null) {
                 try {
                     if (mediaControllerManager.mediaPlayer.isPlaying()) {
@@ -192,28 +236,32 @@ class Home : AppCompatActivity(), MediaOnPlayListener, SettingsFragment.onSelect
                     e.printStackTrace()
                 }
             }
-        }).start()*/
+        }).start()
     }
 
     @SuppressLint("HandlerLeak")
     private val handler: Handler = object : Handler() {
         override fun handleMessage(msg: Message) {
-            seekBar2.setProgress(msg.what)
-            seekBar3.setProgress(msg.what)
-            progressBar.setProgress(msg.what)
+            seekBar2.progress = msg.what
+            seekBar3.progress = msg.what
+            progressBar.progress = msg.what
         }
     }
 
 
-    fun playpause(v: View) {
+    fun playpause() {
+        val nowplay = JSONObject(data.getNowPlaying(this))
+        val title = nowplay.getString("title")
         if (mediaControllerManager.mediaPlayer != null && mediaControllerManager.mediaPlayer.isPlaying) {
             mediaControllerManager.mediaPlayer.pause()
             ivPlayPauseBurron.setImageResource(R.drawable.ic_baseline_play_arrow_24_d1a538)
             ivPlayButton.setImageResource(R.drawable.ic_baseline_play_arrow_24_d1a538)
+            creatNotification(context, title, R.drawable.ic_baseline_play_arrow_24_d1a538, false)
         } else {
             mediaControllerManager.mediaPlayer.start()
             ivPlayPauseBurron.setImageResource(R.drawable.ic_baseline_pause_24_d1a538)
             ivPlayButton.setImageResource(R.drawable.ic_baseline_pause_24_d1a538)
+            creatNotification(context, title, R.drawable.ic_baseline_pause_24_d1a538,true)
         }
     }
 
@@ -254,9 +302,72 @@ class Home : AppCompatActivity(), MediaOnPlayListener, SettingsFragment.onSelect
             .into(mcontext?.ivMediaControllerHeaderThumb)
         mcontext?.bottomsheet?.visibility = View.VISIBLE
         mcontext?.bottomsheet?.startAnimation(fade_in)
+
+        creatNotification(context, Data.getString("title"), R.drawable.ic_baseline_pause_24_d1a538, true)
+
     }
 
+    fun creatNotification(context: Context, Title:String, playButton:Int, isOngoing:Boolean){
+        val mcontext = (context as? Home)
+        val pauseIntent = Intent(mcontext, NotificationReceiver::class.java).setAction("pause")
+        val pausePendingIntent: PendingIntent = PendingIntent.getBroadcast(
+            mcontext,requestID, pauseIntent, FLAG_UPDATE_CURRENT)
 
+        val prevIntent = Intent(mcontext, NotificationReceiver::class.java).setAction("previous")
+        val prevPendingIntent: PendingIntent = PendingIntent.getBroadcast(
+            mcontext,requestID, prevIntent, FLAG_UPDATE_CURRENT)
+
+        val nextIntent = Intent(mcontext, NotificationReceiver::class.java).setAction("next")
+        val nextPendingIntent: PendingIntent = PendingIntent.getBroadcast(
+            mcontext,requestID, nextIntent, FLAG_UPDATE_CURRENT)
+
+        val artwork : Bitmap = BitmapFactory.decodeResource(mcontext?.resources,R.drawable.applogo)
+        val mediaSession : MediaSessionCompat = MediaSessionCompat(mcontext, "tag")
+
+        var builder = Builder(mcontext!!, CHANNEL_ID)
+            .setSmallIcon(R.drawable.applogo)
+            .setLargeIcon(artwork)
+            .setContentTitle(Title)
+            .addAction(R.drawable.ic_baseline_skip_previous_24_d1a538, "Previous", prevPendingIntent) // #0
+            .addAction(playButton, "Pause", pausePendingIntent) // #1
+            .addAction(R.drawable.ic_baseline_skip_next_24_d1a538, "Next", nextPendingIntent) // #2
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setStyle(MediaStyle().setShowActionsInCompactView(0,1,2)
+                .setMediaSession(mediaSession.sessionToken))
+            .setSubText("is Playing")
+            .setOngoing(isOngoing)
+
+
+        with(NotificationManagerCompat.from(mcontext)) {
+            // notificationId is a unique int for each notification that you must define
+            notify(1, builder.build())
+        }
+    }
+
+    val receiver: BroadcastReceiver = object : BroadcastReceiver() {
+        @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+        override fun onReceive(context: Context?, _intent: Intent) {
+            val action = _intent.extras?.getString("actionName")
+            //Toast.makeText(this@Home, "yohoooo!!", Toast.LENGTH_LONG).show()
+            when (action){
+                "pause" ->{
+                    playpause()
+                }
+                "previous" ->{
+                    previousSong()
+                }
+                "next" ->{
+                    nextSong()
+                }
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        notificationManager?.cancelAll()
+        unregisterReceiver(receiver)
+    }
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     fun nextSong(){
         val nowPlaying = data.getNowPlaying(this)
@@ -463,7 +574,6 @@ class Home : AppCompatActivity(), MediaOnPlayListener, SettingsFragment.onSelect
         var mcontext = (context as? Home)
         mcontext?.playProgress?.visibility = View.GONE
         mcontext?.ivPlayPauseBurron?.visibility = View.VISIBLE
-       // Toast.makeText(mcontext, "TAGUMPAY BA??????? ", Toast.LENGTH_SHORT).show()
     }
 
     fun songNotAvailable(context: Context){
@@ -473,7 +583,39 @@ class Home : AppCompatActivity(), MediaOnPlayListener, SettingsFragment.onSelect
         }
         var mcontext = (context as? Home)
         mcontext?.bottomsheet?.visibility = View.GONE
+        mcontext?.dialog?.setContentView(R.layout.unavailable_offline)
+        var tofave = mcontext?.dialog?.findViewById<Button>(R.id.bToFave)
+        var closediag = mcontext?.dialog?.findViewById<Button>(R.id.bPopupExit)
+        mcontext?.dialog?.show()
+        val favefrag = FavoriteFragment()
+
+        closediag?.setOnClickListener { mcontext?.dialog?.dismiss() }
+        tofave?.setOnClickListener {
+            mcontext?.setCurrentFragment(favefrag)
+            mcontext?.dialog?.dismiss()
+        }
     }
+
+    fun firstUse (){
+        var mcontext = (context as? Home)
+        mcontext?.firstTimeDialog?.setContentView(R.layout.first_user_dialog)
+        mcontext?.firstTimeDialog?.setCancelable(false)
+        mcontext?.firstTimeDialog?.setCanceledOnTouchOutside(false)
+        mcontext?.firstTimeDialog?.cbAgree?.setOnCheckedChangeListener { button, b ->
+            mcontext?.firstTimeDialog?.bContinue?.isEnabled = firstTimeDialog?.cbAgree?.isChecked!!
+        }
+
+        mcontext?.firstTimeDialog?.bContinue?.setOnClickListener {
+            data.firstUser(this, false)
+            mcontext?.firstTimeDialog?.dismiss()
+        }
+        mcontext?.firstTimeDialog?.show()
+        Log.e("pumasokbadito","oo")
+    }
+
+
+
+
 
 
 }

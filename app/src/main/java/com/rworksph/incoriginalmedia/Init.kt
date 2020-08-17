@@ -40,6 +40,7 @@ class Init {
             map["streamUrl"] = singleUser.getString("stream_url")
             map["duration"] = singleUser.getString("duration")
             map["favorited"] = singleUser.getString("favorited")
+            map["waveform_url"] = singleUser.getString("waveform_url")
 
 
             songList.add(map)
