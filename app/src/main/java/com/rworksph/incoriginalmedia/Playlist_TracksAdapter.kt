@@ -1,6 +1,7 @@
 package com.rworksph.incoriginalmedia
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Build
 import android.util.Log
 import android.view.LayoutInflater
@@ -24,18 +25,16 @@ class Playlist_TracksAdapter(
 ) : RecyclerView.Adapter<BaseViewHolder<*>>() {
 
     val data = Data()
-    val playlistFragment = PlaylistFragment()
 
 
     companion object {
         private const val TYPE_HEADER = 0
         private const val TYPE_ITEMS = 1
+        private const val TYPE_EMPTY = 2
     }
 
-    val currentPosition : Int = 0
+    var rowIndex = -1
 
-
-    var mediaControllerManager = MediaControllerManager()
     var home = Home()
     var tofavorites = ToFavorites()
     override fun onCreateViewHolder(parent: ViewGroup, position: Int): BaseViewHolder<*> {
@@ -50,10 +49,8 @@ class Playlist_TracksAdapter(
                     .resize(300, 300)
                     .centerCrop()
                     .into(view.findViewById<ImageView>(R.id.ivSetTracksHeaderThumb))
-                //Toast.makeText(context, "tse tse tse", Toast.LENGTH_SHORT).show()
-                view.setOnClickListener{
-                    //
-                }
+
+
                 HeaderViewHolder(view)
             }
 
@@ -63,12 +60,20 @@ class Playlist_TracksAdapter(
                 ItemViewHolder(view)
 
             }
+
+            TYPE_EMPTY -> {
+                val view = LayoutInflater.from(context).inflate(R.layout.empty_playlist_items, parent, false)
+
+                EmptyViewHolder(view)
+
+            }
+
             else -> throw IllegalArgumentException("INvalid view type")
         }
     }
 
     override fun getItemCount(): Int {
-        return dataList.size
+        return dataList.size + 2
     }
 
 
@@ -76,68 +81,75 @@ class Playlist_TracksAdapter(
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onBindViewHolder(holder: BaseViewHolder<*>, position: Int) {
 
+
         if (position.equals(0)){
 
-        }else{
-
-
-            var dataitem = dataList[position-1]
-            holder.itemView.findViewById<TextView>(R.id.tvSetTracksTitle).text = dataitem.get("title")
+        }else if(position <= dataList.size){
+            val dataitem = dataList[position-1]
+            holder.itemView.findViewById<TextView>(R.id.tvSetTracksTitle).text = dataitem["title"]
 
             Picasso.get()
-                .load(dataitem.get("image"))
+                .load(dataitem["image"])
                 .resize(300, 300)
                 .centerCrop()
                 .into(holder.itemView.findViewById<ImageView>(R.id.ivSetTracksThumb))
 
+
+            holder.itemView.ibPlayPause.setOnClickListener {
+                /*rowIndex = position
+                notifyDataSetChanged()*/
+                playsong(dataitem, position) }
+
             holder.itemView.setOnClickListener {
+                /*rowIndex = position
+                notifyDataSetChanged()*/
+                playsong(dataitem, position)}
 
-                Log.e("connectivity", data.isConnected(context).toString())
+            /*if (rowIndex == position){
+                holder.itemView.ibPlayPause.setImageResource(R.drawable.ic_baseline_pause_24_d1a538)
+            }else{
+                holder.itemView.ibPlayPause.setImageResource(R.drawable.ic_baseline_play_arrow_24_d1a538)
+            }*/
 
-                if (data.isConnected(context)==true){
-                    mediaControllerManager.mediaControllerManager(dataitem.get("streamUrl").toString(), context)
-
-
-                    val trackData = JSONObject()
-                    trackData.put("title", dataitem.get("title"))
-                    trackData.put("image", dataitem.get("image"))
-                    trackData.put("duration", dataitem.get("duration"))
-                    trackData.put("streamUrl", dataitem.get("streamUrl"))
-                    trackData.put("trackID", dataitem.get("trackID"))
-                    trackData.put("id", position)
-                    trackData.put("from", intent.getString("playlistID"))
-                    home.onMediaPlay(context, trackData)
-                }else{
-                    //Toast.makeText(context, "Not Available offline",Toast.LENGTH_SHORT).show()
-                    home.songNotAvailable(context)
+            if (data.getFavorites(context) != ""){
+                if (data.getFavorites(context).toString().contains(dataitem["trackID"].toString())){
+                    dataitem["favorited"] = "true"
                 }
-
             }
-
-
 
             val popup = PopupMenu(context, holder.itemView)
             popup.inflate(R.menu.popup_menu)
-            if (dataitem.get("favorited").equals("true")){
-                popup.menu.findItem(R.id.action_popup_removetofavorites).setVisible(true)
-                popup.menu.findItem(R.id.action_popup_addtofavorites).setVisible(false)
+            if (dataitem["favorited"].equals("true")){
+                popup.menu.findItem(R.id.action_popup_removetofavorites).isVisible = true
+                popup.menu.findItem(R.id.action_popup_addtofavorites).isVisible = false
             }
-            holder.itemView.ibMore.setOnClickListener(View.OnClickListener {
+
+            holder.itemView.ibMore.setOnClickListener {
 
                 popup.setOnMenuItemClickListener { item ->
                     when (item.itemId) {
                         R.id.action_popup_addtofavorites ->{
-                            /*popup.menu.findItem(R.id.action_popup_removetofavorites).setVisible(true)
-                            popup.menu.findItem(R.id.action_popup_addtofavorites).setVisible(false)*/
-                            dataitem.put("favorited", "true")
-                            tofavorites.actionFavorite(context,"add", dataitem.get("trackID").toString(),intent.getString("playlistID"),dataitem.get("streamUrl").toString() )
+
+                            //dataitem["favorited"] = "true"
+                            tofavorites.actionFavorite(context,
+                                "add",
+                                dataitem["trackID"].toString(),
+                                intent.getString("playlistID"),
+                                dataitem["streamUrl"].toString(),
+                                dataitem["title"].toString()  )
                             notifyItemChanged(holder.adapterPosition)
+
                             true
                         }
                         R.id.action_popup_removetofavorites->{
-                            dataitem.put("favorited", "false")
-                            Log.e("from", intent.getString("playlistID"))
-                            tofavorites.actionFavorite(context,"remove", dataitem.get("trackID").toString(),intent.getString("playlistID"),dataitem.get("streamUrl").toString() )
+                            dataitem["favorited"] = "false"
+                            //Log.e("from", intent.getString("playlistID"))
+                            tofavorites.actionFavorite(context,
+                                "remove",
+                                dataitem["trackID"].toString(),
+                                intent.getString("playlistID"),
+                                dataitem["streamUrl"].toString(),
+                                dataitem["title"].toString()  )
                             notifyItemChanged(holder.adapterPosition)
                             true
                         }
@@ -147,16 +159,44 @@ class Playlist_TracksAdapter(
 
                 }
                 popup.show()
-            })
+            }
+        }
+    }
+
+    fun playsong(item_data : HashMap<String, String>, position: Int){
+        Log.e("connectivity", data.isConnected(context).toString())
+
+        if (data.isConnected(context)==true){
+
+            val trackData = JSONObject()
+            trackData.put("title", item_data["title"])
+            trackData.put("image", item_data["image"])
+            trackData.put("duration", item_data["duration"])
+            trackData.put("streamUrl", item_data["streamUrl"])
+            trackData.put("trackID", item_data["trackID"])
+            trackData.put("waveform_url", item_data["waveform_url"])
+            trackData.put("id", position-1)
+            trackData.put("from", intent.getString("playlistID"))
+            home.onMediaPlay(context, trackData)
+        }else{
+            home.songNotAvailable(context)
         }
     }
 
     override fun getItemViewType(position: Int): Int {
-        if (position == 0) {
-            return TYPE_HEADER
+        return when {
+            position == 0 -> {
+                TYPE_HEADER
+            }
+            position <= dataList.size -> {
+                TYPE_ITEMS
+            }
+            else -> {
+                TYPE_EMPTY
+            }
         }
 
-        return TYPE_ITEMS
+
     }
 
 
@@ -167,8 +207,12 @@ class Playlist_TracksAdapter(
     }
 
     inner class ItemViewHolder(itemView: View): BaseViewHolder<View>(itemView) {
+        override fun bind(item: View) {
 
+        }
+    }
 
+    inner class EmptyViewHolder(itemView: View): BaseViewHolder<View>(itemView) {
         override fun bind(item: View) {
 
         }

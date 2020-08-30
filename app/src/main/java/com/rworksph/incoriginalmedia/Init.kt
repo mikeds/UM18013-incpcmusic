@@ -41,6 +41,7 @@ class Init {
             map["duration"] = singleUser.getString("duration")
             map["favorited"] = singleUser.getString("favorited")
             map["waveform_url"] = singleUser.getString("waveform_url")
+            map["downloaded"] = singleUser.getString("downloadable")
 
 
             songList.add(map)

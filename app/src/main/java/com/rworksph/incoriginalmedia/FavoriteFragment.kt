@@ -32,7 +32,16 @@ class FavoriteFragment:Fragment() {
             view.rvFav.layoutManager = layoutManager
             view.rvFav.adapter = FavoritesAdapter(activity!!, trackList)
         }
-
+        view.refreshlayout.setOnRefreshListener {
+            if (data.getFavorites(activity!!) != ""){
+                trackList.clear()
+                init.initTracks(trackList, data.getFavorites(activity!!).toString())
+                val layoutManager = LinearLayoutManager(activity!!, LinearLayoutManager.VERTICAL, false)
+                view.rvFav.layoutManager = layoutManager
+                view.rvFav.adapter = FavoritesAdapter(activity!!, trackList)
+            }
+            view.refreshlayout.isRefreshing = false
+        }
 
         return view
     }

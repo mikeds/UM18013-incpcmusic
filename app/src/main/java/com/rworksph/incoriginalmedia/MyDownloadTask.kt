@@ -99,8 +99,6 @@ class MyDownloadTask(
 
     override fun onPreExecute() {
         super.onPreExecute()
-
-        Toast.makeText(context, "downloading", Toast.LENGTH_LONG).show()
     }
 
 

@@ -22,10 +22,7 @@ class Home_TracksAdapter (private val context: Context,
 
     var home = Home()
     var data = Data()
-    //var mediaOnPlayListener : MediaOnPlayListener? = null
-    var mediaPlayer = MediaPlayer()
-    var mediaControllerManager = MediaControllerManager()
-    val mContext = context
+
     override fun getItemCount(): Int {
         return dataList.size
     }
@@ -52,12 +49,14 @@ class Home_TracksAdapter (private val context: Context,
 
         rowView.itemView.setOnClickListener(View.OnClickListener {
             if (data.isConnected(context)==true){
-            mediaControllerManager.mediaControllerManager(steamUrl,context)
+
+
             val trackData = JSONObject()
             trackData.put("title", dataitem.get("title"))
             trackData.put("image", dataitem.get("image"))
             trackData.put("duration", dataitem.get("duration"))
             trackData.put("streamUrl", dataitem.get("streamUrl"))
+            trackData.put("waveform_url", dataitem.get("waveform_url"))
             trackData.put("trackID", dataitem.get("trackID"))
             trackData.put("id", position)
             trackData.put("from", "allsongs")

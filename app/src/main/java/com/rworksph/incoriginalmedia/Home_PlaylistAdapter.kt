@@ -36,11 +36,12 @@ class Home_PlaylistAdapter (internal var context: Context, internal var list: Li
         val view = LayoutInflater.from(context).inflate(R.layout.home_playlist_item, container, false)
 
         view.findViewById<TextView>(R.id.tvSetTitle).text = dataitem.title
-        view.findViewById<TextView>(R.id.tvSetSongCount).text = dataitem.trackCount
+        //view.findViewById<TextView>(R.id.tvSetSongCount).text = dataitem.trackCount
+        view.findViewById<TextView>(R.id.tvSetSongCount).visibility = View.GONE
 
         Picasso.get()
             .load(dataitem.thumb)
-            .resize(300, 300)
+            .resize(450, 450)
             .centerCrop()
             .into(view.findViewById<ImageView>(R.id.ivSetCard))
 

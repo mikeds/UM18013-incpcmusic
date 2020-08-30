@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "229746335081",
+    "firebase_url": "https://incplaylist-2020.firebaseio.com",
+    "project_id": "incplaylist-2020",
+    "storage_bucket": "incplaylist-2020.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:229746335081:android:2025f8fcf65f76aaec31f8",
+        "android_client_info": {
+          "package_name": "com.rworksph.incoriginalmedia"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "229746335081-hjr2nqhd84ur688hqrqf5jha4jvo5tcb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCxmo0ze1mJUUjd-5ZE5L-n9uGhBSO5XNA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "229746335081-hjr2nqhd84ur688hqrqf5jha4jvo5tcb.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "229746335081-n9c0vlds4ti2odas9oa2uurlibcgde11.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "net.inc.playlist"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

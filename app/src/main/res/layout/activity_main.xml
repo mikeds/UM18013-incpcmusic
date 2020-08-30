@@ -8,21 +8,30 @@
     android:gravity="center"
     tools:context=".MainActivity">
 
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:foregroundGravity="center_vertical|center|center_horizontal"
+        android:gravity="center|center_horizontal|center_vertical"
+        android:text="v.1.0.0" />
+
     <ProgressBar
-        android:id="@+id/progressBar"
+        android:id="@+id/progressSplash"
         style="@android:style/Widget.ProgressBar.Horizontal"
         android:layout_width="match_parent"
         android:layout_height="8dp"
-        android:layout_below="@+id/imageView"
+        android:layout_below="@id/ivSplash"
         android:layout_marginLeft="70dp"
         android:layout_marginTop="60dp"
         android:layout_marginRight="70dp"
         android:progress="0" />
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/ivSplash"
         android:layout_width="match_parent"
         android:layout_height="225dp"
-        app:srcCompat="@drawable/isplas" />
+        android:src="@drawable/isplas" />
 
 </RelativeLayout>

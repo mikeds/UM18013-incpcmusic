@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="100dp"
     android:background="#333333"
@@ -32,7 +33,7 @@
                 android:layout_weight="1"
                 android:text="TextView"
                 android:textColor="#ffffff"
-                android:textSize="16dp"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 android:ellipsize="marquee"
                 android:marqueeRepeatLimit="marquee_forever"
@@ -51,21 +52,24 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                app:srcCompat="@drawable/ic_baseline_skip_previous_24_d1a538" />
+                app:srcCompat="@drawable/ic_baseline_skip_previous_24_d1a538"
+                tools:ignore="VectorDrawableCompat" />
 
             <ImageView
                 android:id="@+id/ivNotifPlayPause"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                app:srcCompat="@drawable/ic_baseline_play_arrow_24_d1a538" />
+                app:srcCompat="@drawable/ic_baseline_play_arrow_24_d1a538"
+                tools:ignore="VectorDrawableCompat" />
 
             <ImageView
                 android:id="@+id/ivNotifSkip"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                app:srcCompat="@drawable/ic_baseline_skip_next_24_d1a538" />
+                app:srcCompat="@drawable/ic_baseline_skip_next_24_d1a538"
+                tools:ignore="VectorDrawableCompat" />
         </LinearLayout>
     </LinearLayout>
 

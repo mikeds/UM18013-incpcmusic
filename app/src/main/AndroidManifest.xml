@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.rworksph.incoriginalmedia">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -9,18 +10,23 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
 
     <application
-
+        android:usesCleartextTraffic="true"
         android:allowBackup="true"
-        android:icon="@drawable/applogoo"
+        android:icon="@drawable/newapplogo"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/newapplogo"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:ignore="UnusedAttribute">
         <receiver android:name=".Services.NotificationReceiver"/>
-        <service android:name=".Services.OnClearFromRecentServices"/>
+        <service android:name=".Services.MusicServices"
+            android:usesCleartextTraffic="true"
+            />
         <activity android:name=".Home"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>

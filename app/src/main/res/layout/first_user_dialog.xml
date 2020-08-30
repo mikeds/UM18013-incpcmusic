@@ -30,7 +30,7 @@
                 android:background="#fff"
                 android:text="@string/terms_and_conditions"
                 android:textColor="#333"
-                android:textSize="16dp" />
+                android:textSize="16sp" />
 
         </LinearLayout>
     </ScrollView>
@@ -48,7 +48,7 @@
         android:enabled="false"
         android:text="Continue"
         android:textColor="#fff"
-        android:textSize="16dp"
+        android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -60,6 +60,7 @@
         android:layout_height="wrap_content"
         android:text="Accept Terms and Conditions"
         app:layout_constraintBottom_toTopOf="@+id/bContinue"
-        tools:layout_editor_absoluteX="20dp" />
+        tools:layout_editor_absoluteX="20dp"
+        tools:ignore="MissingConstraints" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

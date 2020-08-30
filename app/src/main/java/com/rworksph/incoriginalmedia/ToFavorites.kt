@@ -18,7 +18,8 @@ class ToFavorites {
 
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
-    fun actionFavorite(context: Context, action:String, trackID:String, from: String, url:String){
+    fun actionFavorite(context: Context, action:String, trackID:String, from: String, url:String, title: String){
+        val home = Home()
         when(action){
             "add" ->{
                 if(data.getFavorites(context).equals("")){
@@ -27,6 +28,7 @@ class ToFavorites {
                     if (JSONArray(data.getFavorites(context)).length() >= 15){
                         Toast.makeText(context, "Maximum Favorite Count Reached", Toast.LENGTH_LONG).show()
                     }else{
+                        home.downloadingMusic(context, title,"Downloading" )
                         addToFavorites(context, trackID, from, url)
                     }
                 }
@@ -42,8 +44,7 @@ class ToFavorites {
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
     fun addToFavorites(context: Context, trackID: String, from: String, url: String){
-        val oldArr = JSONArray(data.getPlaylistTracks(context,from))
-        val newArr = JSONArray()
+        val playlistArr = JSONArray(data.getPlaylistTracks(context,from))
         var favArr = JSONArray()
         if (data.getFavorites(context).toString() == ""){
             favArr = JSONArray()
@@ -53,24 +54,23 @@ class ToFavorites {
 
         //if (favArr.toString().contains("\"id\":\""+trackID+"\""))
         val date = Calendar.getInstance()
-        date.add(Calendar.DAY_OF_MONTH, 1)
+        date.add(Calendar.DAY_OF_MONTH, 15)
         val expireTime = SimpleDateFormat("yyyyMMdd").format(date.time)
-        for (i in 0 until oldArr.length()) {
-            val oldData = oldArr.getJSONObject(i)
-            if (oldData.getString("id").equals(trackID)){
-                oldData.put("favorited","true")
-                oldData.put("fromPlaylist",from)
-                oldData.put("expiration", expireTime)
-                favArr.put(oldData)
-                newArr.put(oldData)
-            }else{
-                newArr.put(oldData)
+
+        for (i in 0 until playlistArr.length()) {
+            val playlistData = playlistArr.getJSONObject(i)
+            if (playlistData.getString("id").equals(trackID)){
+                playlistData.put("favorited","true")
+                playlistData.put("downloadable","0")
+                playlistData.put("fromPlaylist",from)
+                playlistData.put("expiration", expireTime)
+                favArr.put(playlistData)
+
             }
         }
-        data.storePlaylistTracks(context,from, newArr.toString())
+
+        data.favorites(context, favArr.toString())
         Log.e("favarr", favArr.toString())
-
-
         val task = MyDownloadTask(context,
             url,
             "$trackID.mp3",
@@ -78,8 +78,22 @@ class ToFavorites {
             object : MyDownloadTask.DownloadListener {
                 override fun onDownloadComplete(download: Boolean, pos: Int) {
                     if (download) {
-                        data.favorites(context, favArr.toString())
-                        Toast.makeText(context, "added to favorites", Toast.LENGTH_SHORT).show()
+                        val home = Home()
+
+                        var title = ""
+                        val newfavorites = JSONArray()
+                        val favarray = JSONArray(data.getFavorites(context))
+                        for (i in 0 until favarray.length()){
+                            val favoriteData = favarray.getJSONObject(i)
+                            if (favoriteData.getString("id") == trackID){
+                                favoriteData.put("downloadable","1")
+                                title = favoriteData.getString("title")
+                            }
+
+                            newfavorites.put(favoriteData)
+                        }
+                        home.downloadingMusic(context, title, "Added to Favorites")
+                        data.favorites(context,newfavorites.toString())
                     }
                 }
 
@@ -88,6 +102,7 @@ class ToFavorites {
                 }
             })
         task.execute()
+
     }
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
@@ -99,49 +114,16 @@ class ToFavorites {
     ){
 
 
-        val favarr = JSONArray(data.getPlaylistTracks(context,from))
-        val newArr = JSONArray()
-        val newfav = JSONArray()
-
+        val favarr = JSONArray(data.getFavorites(context))
+        val newFav = JSONArray()
         for (i in 0 until favarr.length()){
-            val oldData = favarr.getJSONObject(i)
-
-            if (oldData.getString("id") == trackID){
-                oldData.put("favorited","false")
-                newArr.put(oldData)
-            }else{
-                newArr.put(oldData)
-            }
-
-            if (oldData.getString("favorited") == "true"){
-                newfav.put(oldData)
-            }
-
-            if (from == "favorites"){
-                val newPlaylist = JSONArray()
-                val playlistID = oldData.getString("fromPlaylist")
-                val playlistArr = JSONArray(data.getPlaylistTracks(context, playlistID))
-                for (j in 0 until playlistArr.length()){
-                    val playlistData = playlistArr.getJSONObject(j)
-                    if (playlistData.getString("id") == trackID){
-                        playlistData.put("favorited","false")
-                        newPlaylist.put(playlistData)
-                    }else{
-                        newPlaylist.put(playlistData)
-                    }
-                }
-
-                data.storePlaylistTracks(context,playlistID,newPlaylist.toString())
+            val favData = favarr.getJSONObject(i)
+            if (favData.getString("id") != trackID){
+                newFav.put(favData)
             }
         }
 
-
-
-        data.storePlaylistTracks(context,from, newArr.toString())
-        val checkjson = JSONArray(data.getPlaylistTracks(context,from))
-        Log.e("remove", checkjson.length().toString())
-
-        data.favorites(context,newfav.toString())
+        data.favorites(context, newFav.toString())
         val folder = File(context.filesDir, "elpaboritos")
         val documentFile = File("$folder/$trackID.mp3")
         documentFile.delete()

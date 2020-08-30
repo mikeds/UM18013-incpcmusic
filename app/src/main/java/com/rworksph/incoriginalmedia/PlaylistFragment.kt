@@ -36,9 +36,7 @@ class PlaylistFragment:Fragment(),PlaylistData {
         return view
     }
 
-   fun blabla(){
-       view?.rvSetTracks?.adapter?.notifyDataSetChanged()
-   }
+
 
     override fun playlistData(context: Context, data: JSONObject) {
         intent = data

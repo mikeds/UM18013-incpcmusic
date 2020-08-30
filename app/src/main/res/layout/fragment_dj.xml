@@ -23,7 +23,8 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight=".5">
+                android:layout_weight=".5"
+                android:gravity="center|center_horizontal">
 
                 <ImageView
                     android:id="@+id/imageView4"
@@ -34,9 +35,14 @@
 
                 <ImageView
                     android:id="@+id/imageView5"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:srcCompat="@drawable/applogo" />
+                    android:layout_width="250dp"
+                    android:layout_height="250dp"
+                    android:layout_centerInParent="true"
+                    android:layout_marginStart="0dp"
+                    android:layout_marginEnd="0dp"
+                    android:background="@drawable/white_rounded"
+                    android:padding="20dp"
+                    app:srcCompat="@drawable/isplas" />
             </RelativeLayout>
 
             <RelativeLayout
@@ -57,7 +63,8 @@
                         android:layout_alignParentRight="true"
                         android:layout_marginRight="10dp"
                         android:scaleType="fitXY"
-                        app:srcCompat="@drawable/ic_baseline_play_arrow_24_d1a538" />
+                        app:srcCompat="@drawable/ic_baseline_play_arrow_24_d1a538"
+                        tools:ignore="VectorDrawableCompat" />
 
                     <TextView
                         android:id="@+id/textView"
@@ -80,8 +87,7 @@
                     android:orientation="vertical"
                     android:padding="0dp"
                     android:paddingLeft="0dp"
-                    android:paddingRight="0dp"
-                    app:wave_color="#d1a538" />
+                    android:paddingRight="0dp" />
 
             </RelativeLayout>
         </LinearLayout>

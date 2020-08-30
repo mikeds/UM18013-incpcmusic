@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Select Theme"
-            android:textSize="16dp"
+            android:textSize="16sp"
             android:textStyle="bold" />
 
         <LinearLayout
@@ -303,7 +303,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:text="Select Background"
-            android:textSize="16dp"
+            android:textSize="16sp"
             android:textStyle="bold" />
 
         <LinearLayout

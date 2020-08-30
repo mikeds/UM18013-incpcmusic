@@ -2,43 +2,39 @@ package com.rworksph.incoriginalmedia
 
 import android.content.Context
 
-class Data() {
-
-    val songList = ArrayList<HashMap<String, String>>()
+class Data {
 
 
     fun storePlaylists(context:Context,data: String) {
         val sharedPreference =  context.getSharedPreferences("Data",Context.MODE_PRIVATE)
-        var editor = sharedPreference.edit()
+        val editor = sharedPreference.edit()
         editor.putString("PlaylistData",data)
-        editor.commit()
+        editor.apply()
 
     }
 
     fun getPlaylists(context:Context): String? {
         val sharedPreference =  context.getSharedPreferences("Data",Context.MODE_PRIVATE)
-        val data = sharedPreference.getString("PlaylistData","")
-        return data
+        return sharedPreference.getString("PlaylistData","")
     }
 
     fun storeAllSongs(context:Context,data: String) {
         val sharedPreference =  context.getSharedPreferences("Data",Context.MODE_PRIVATE)
-        var editor = sharedPreference.edit()
+        val editor = sharedPreference.edit()
         editor.putString("AllTracks",data)
-        editor.commit()
+        editor.apply()
     }
 
     fun getAllSongs(context:Context): String? {
         val sharedPreference =  context.getSharedPreferences("Data",Context.MODE_PRIVATE)
-        val data = sharedPreference.getString("AllTracks","")
-        return data
+        return sharedPreference.getString("AllTracks","")
     }
 
     fun storePlaylistTracks(context:Context,id: String,data: String) {
         val sharedPreference =  context.getSharedPreferences("Data",Context.MODE_PRIVATE)
-        var editor = sharedPreference.edit()
+        val editor = sharedPreference.edit()
         editor.putString(id,data)
-        editor.commit()
+        editor.apply()
     }
 
     fun getPlaylistTracks(context:Context,id: String): String? {
@@ -48,9 +44,9 @@ class Data() {
 
     fun nowPlaying(context:Context,data: String){
         val sharedPreference =  context.getSharedPreferences("Data",Context.MODE_PRIVATE)
-        var editor = sharedPreference.edit()
+        val editor = sharedPreference.edit()
         editor.putString("nowPlaying",data)
-        editor.commit()
+        editor.apply()
     }
 
     fun getNowPlaying(context:Context): String? {
@@ -60,9 +56,9 @@ class Data() {
 
     fun favorites(context:Context,data: String){
         val sharedPreference =  context.getSharedPreferences("Data",Context.MODE_PRIVATE)
-        var editor = sharedPreference.edit()
+        val editor = sharedPreference.edit()
         editor.putString("favorites",data)
-        editor.commit()
+        editor.apply()
     }
 
     fun getFavorites(context:Context): String? {
@@ -72,9 +68,9 @@ class Data() {
 
     fun setTheme(context: Context, data: String){
         val sharedPreference =  context.getSharedPreferences("Data",Context.MODE_PRIVATE)
-        var editor = sharedPreference.edit()
+        val editor = sharedPreference.edit()
         editor.putString("Theme",data)
-        editor.commit()
+        editor.apply()
     }
 
     fun getTheme(context: Context):String?{
@@ -84,9 +80,9 @@ class Data() {
 
     fun connectivity(context: Context, isConnected:Boolean){
         val sharedPreference =  context.getSharedPreferences("Data",Context.MODE_PRIVATE)
-        var editor = sharedPreference.edit()
+        val editor = sharedPreference.edit()
         editor.putBoolean("connected",isConnected)
-        editor.commit()
+        editor.apply()
     }
 
     fun isConnected(context: Context):Boolean?{
@@ -98,7 +94,7 @@ class Data() {
         val sharedPreference =  context.getSharedPreferences("Data",Context.MODE_PRIVATE)
         val editor = sharedPreference.edit()
         editor.putBoolean("firstTimer",unangbeses)
-        editor.commit()
+        editor.apply()
     }
 
     fun isFirstTimeUser(context: Context):Boolean?{
